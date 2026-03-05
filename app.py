@@ -15,6 +15,15 @@ CATEGORIES = [
     "Tecnology",
 ]
 
+DEFAULT_IMAGES = {
+     "About Me": "/static/images/categories/aboutme.jpg",
+    "Entertainment": "/static/images/entertainment.jpg" ,
+    "History": "/static/images/categories/history.jpg",
+    "Science": "/static/images/categories/science.jpg",
+    "Sports": "/static/images/categories/sports.jpg" ,
+    "Tecnology": "/static/images/tecnology.jpg" ,
+}
+
 @app.route("/")
 @app.route("/index")
 def index():
@@ -26,8 +35,12 @@ def create():
         title = request.form.get("title")
         category = request.form.get("category")
         description = request.form.get("description")
+        image = request.form.get("image")
         
-        db.execute("INSERT INTO quiz (title, category, description) VALUES(?, ?, ?)", title, category, description)
+        if not image :
+            image = DEFAULT_IMAGES.get(category)
+        
+        db.execute("INSERT INTO quiz (title, category, description, image) VALUES(?, ?, ?, ?)", title, category, description, image)
         
         quiz_id = db.execute("SELECT last_insert_rowid() as id")[0]["id"]
         
