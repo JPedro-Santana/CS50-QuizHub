@@ -14,24 +14,18 @@
       </div>
       <div class="form-group">
         <label for="category">Category</label>
-        <select id="category" name="category">
+        <select id="category" name="category" required>
           <option value="" selected>Select Category</option>
           {% for category in categories %}
           <option value="{{category}}">{{category}}</option>
           {% endfor %}
         </select>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for msg in messages %}
-            <p class="msg">{{msg}}</p>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
       </div>
       <div class="form-group">
         <label for="description">Description</label>
         <textarea id="description" name="description" rows="3" maxlength="148"></textarea>
       </div>
+     
       
       <h2>Question</h2>
       
@@ -48,7 +42,7 @@
           <label>Question</label>
           <input type="text" placeholder="Type your question..." />
         </div>
-        
+
         <button type="button" class="btn btn-main">Add Question</button>
         <br /><br />
         <button type="submit" class="btn btn-save">Save Quiz</button>

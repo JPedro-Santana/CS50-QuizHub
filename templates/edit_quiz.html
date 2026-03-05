@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %} Edit Quiz {% endblock %}
+
+{% block content %}
+<main>
+<h1>Edit Quiz</h1>
+
+<form method="POST">
+<div class="form-group">
+<label>Title</label>
+<input type="text" name="title" value="{{ quiz.title }}" required>
+</div>
+<div class="form-group">
+<label>Category</label>
+<select name="category">
+{% for category in categories %}
+<option value="{{category}}"
+{% if category == quiz.category %}
+selected
+{% endif %}>
+{{category}}
+</option>
+{% endfor %}
+</select>
+</div>
+<div class="form-group">
+<label>Description</label>
+<textarea name="description">{{quiz.description}}</textarea>
+</div>
+<button class="btn btn-primary">Update Quiz</button>
+</form>
+</main>
+{% endblock %}

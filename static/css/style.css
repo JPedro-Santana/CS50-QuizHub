@@ -197,6 +197,7 @@ section h2 {
 }
 
 footer {
+  grid-area: footer;
   background: linear-gradient(180deg, #3676c4, #1f4f8f);
   display: flex;
   align-items: center;
@@ -410,10 +411,51 @@ h2 {
   background: hsl(140, 58%, 24%);
 }
 
-/* Flash Error Message */
-.msg{
-  color: red;
-  font-size: 1rem;
-  padding-left: 8px;
-  padding-top: 12px;
+.btn-delete{
+  background-color: red;
+  padding: 10px 20px;
+  color: white;
+}
+
+.btn-delete:hover{
+  background-color: #a50000;
+
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #000000;
+    padding: 25px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    color: white;
+}
+
+.modal-content h2{
+  color: white;
+}
+
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-cancel {
+    background: #555;
+    padding: 10px 16px;
+    color: white;
+}
+
+.btn-cancel:hover{
+  background-color: #6d6c6c;
 }

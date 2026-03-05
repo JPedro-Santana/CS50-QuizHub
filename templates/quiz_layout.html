@@ -1,18 +1,35 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} 
 
-{% block title %} {{quiz.title}} {% endblock %}
+{% block title %} {{quiz.title}} {% endblock %} 
 
 {% block content %}
 <main class="quiz-layout-container">
-    <div class="quiz-header">
-        <h1>{{quiz.title}}</h1>
-        <button>{{quiz.category}}</button>
-        <p>{{quiz.description}}</p>
+  <div class="quiz-header">
+    <h1>{{quiz.title}}</h1>
+    <button>{{quiz.category}}</button>
+    <p>{{quiz.description}}</p>
+  </div>
+  <form action="/quiz/edit/{{quiz.id}}" method="GET">
+    <button type="submit" class="btn btn-edit">Edit</button>
+  </form>
+  <form id="delete-form" action="/quiz/delete/{{ quiz.id }}" method="POST">
+    <button type="button" class="btn btn-delete" id="openDeleteModal">
+        Delete Quiz
+    </button>
+</form>
+
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <h2>Delete Quiz</h2>
+        <p>Are you sure you want to delete this quiz? This action cannot be undone.</p>
+
+        <div class="modal-actions">
+            <button id="cancelDelete" class="btn btn-cancel">Cancel</button>
+            <button id="confirmDelete" class="btn btn-delete">Delete</button>
+        </div>
     </div>
-    
-
-    <div class="result"></div>
-
+</div>
+  <div class="result"></div>
 </main>
-
+<script src="/static/js/script.js"></script>
 {% endblock %}
