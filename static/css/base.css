@@ -41,7 +41,6 @@ nav ul {
 nav ul li a {
   position: relative;
   color: white;
-  text-decoration: none;
   font-size: 18px;
   padding-bottom: 4px;
 }
@@ -171,7 +170,7 @@ section h2 {
 }
 
 /* CARD BUTTON */
-.btn-resolve {
+.btn-solve {
   width: calc(100% - 30px);
   margin: 0 15px 20px;
   padding: 12px;
@@ -183,16 +182,16 @@ section h2 {
   background-color: #1e62bb;
 }
 
-.btn-resolve:hover {
+.btn-solve:hover {
   opacity: 0.9;
 }
 
 /* BUTTON COLOR VARIATION */
-.quiz-card:nth-child(2) .btn-resolve {
+.quiz-card:nth-child(2) .btn-solve {
   background-color: #6a5acd;
 }
 
-.quiz-card:nth-child(3) .btn-resolve {
+.quiz-card:nth-child(3) .btn-solve {
   background-color: #f28c28;
 }
 
@@ -236,7 +235,7 @@ footer {
   cursor: pointer;
 }
 
-/*-------- EDIT QUIZ --------*/
+/*-------- MODAL EDIT QUIZ --------*/
 .modal {
     display: none;
     position: fixed;

@@ -1,36 +1,103 @@
 {% extends "layout.html" %}
 
-{%block css_style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/create.css') }}"> {% endblock %}
+{% block css_style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/create.css') }}">
+{% endblock %}
 
-{% block title %} Edit Quiz {% endblock %}
+{% block title %}Edit Quiz{% endblock %}
 
 {% block content %}
-<main>
+<main class="quiz-editor">
+
 <h1>Edit Quiz</h1>
 
-<form method="POST">
+<form method="POST" id="quiz-form">
+
 <div class="form-group">
 <label>Title</label>
 <input type="text" name="title" value="{{ quiz.title }}" required>
 </div>
+
 <div class="form-group">
 <label>Category</label>
 <select name="category">
 {% for category in categories %}
-<option value="{{category}}"
-{% if category == quiz.category %}
-selected
-{% endif %}>
-{{category}}
+<option value="{{ category }}"
+{% if category == quiz.category %}selected{% endif %}>
+{{ category }}
 </option>
 {% endfor %}
 </select>
 </div>
+
 <div class="form-group">
 <label>Description</label>
-<textarea name="description">{{quiz.description}}</textarea>
+<textarea name="description">{{ quiz.description }}</textarea>
 </div>
-<button class="btn btn-save">Update Quiz</button>
+
+<hr>
+
+<h2>Questions</h2>
+
+<div id="questions-container">
+
+{% for q in questions %}
+<div class="question-item" data-type="{{ q.question_type }}">
+
+<h3 contenteditable="true">{{ q.question_text }}</h3>
+
+{% if q.question_type == "multiple" %}
+
+<div class="options">
+
+{% for option in q.options %}
+
+<label>
+<input type="radio"
+name="answer_{{ q.id }}"
+{% if option.is_correct %}checked{% endif %}
+>
+
+<input
+type="text"
+value="{{ option.options_text }}"
+>
+</label>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+{% if q.question_type == "open" %}
+
+<div class="open-answer">
+
+<label>Correct Answer</label>
+
+<input
+type="text"
+name="correct_answer"
+value="{{ q.correct_answer }}"
+>
+
+</div>
+
+{% endif %}
+
+</div>
+{% endfor %}
+
+</div>
+
+<input type="hidden" name="questions_json" id="questions-json">
+
+<div class="editor-actions">
+<button type="submit" class="btn btn-save">Update Quiz</button>
+</div>
+
 </form>
+
 </main>
 {% endblock %}

@@ -1,9 +1,9 @@
-{% extends "layout.html" %} {%block css_style %}
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/create.css') }}"
-/>
-{% endblock %} {% block title %} Create Quizzes {% endblock %}
+{% extends "layout.html" %} 
+
+{%block css_style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/create.css') }}"/> {% endblock %} 
+
+{% block title %} Create Quizzes {% endblock %}
+
 {% block content %}
 <main>
   <div class="container">
@@ -28,6 +28,13 @@
         <option value="{{category}}">{{category}}</option>
         {% endfor %}
       </select>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for msg in messages %}
+            <p class="msg">{{msg}}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
     </div>
     <div class="form-group">
       <label for="description">Description</label>
@@ -52,7 +59,7 @@
     <div class="question-block">
       <div class="form-group">
         <label>Question type</label>
-        <select name="question-type" class="question-type">
+        <select name="question-type" class="question-type" required>
           <option value="multiple">Multiple Choices</option>
           <option value="boolean">True or False</option>
           <option value="text">Open Answer</option>
@@ -63,12 +70,19 @@
         <label>Question</label>
         <input
           type="text"
+          name="question-text"
           id="question-text"
           class="question-input"
           placeholder="Type your question..."
-          required
         />
       </div>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for msg in messages %}
+            <p class="msg">{{msg}}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
 
       <button type="button" class="btn btn-main" id="btn-add">
         Add Question
@@ -77,6 +91,7 @@
     <div id="questions-container"></div>
     <br /><br />
     <button type="submit" class="btn btn-save">Save Quiz</button>
+    <input type="hidden" name="questions_json" id="questions-json">
   </form>
 </main>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

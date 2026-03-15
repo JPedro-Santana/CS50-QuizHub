@@ -1,5 +1,6 @@
 from cs50 import SQL
-from flask import Flask, redirect, render_template, request, url_for, abort
+from flask import Flask, redirect, render_template, request, url_for, abort, flash
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "my-secret-key"
@@ -36,16 +37,90 @@ def create():
         category = request.form.get("category")
         description = request.form.get("description")
         image = request.form.get("image")
-        
-        if not image :
+
+        if not image:
             image = DEFAULT_IMAGES.get(category)
-        
-        db.execute("INSERT INTO quiz (title, category, description, image) VALUES(?, ?, ?, ?)", title, category, description, image)
-        
+            
+        if not title or not category:
+            flash("Title and Category are required.")
+            return redirect ("/create")
+
+        db.execute(
+            "INSERT INTO quiz (title, category, description, image) VALUES(?, ?, ?, ?)",
+            title,
+            category,
+            description,
+            image,
+        )
+
         quiz_id = db.execute("SELECT last_insert_rowid() as id")[0]["id"]
-        
+
+        questions_json = request.form.get("questions_json")
+        if questions_json:
+            try:
+                questions = json.loads(questions_json)
+            except json.JSONDecodeError:
+                questions = []
+
+            if not questions:
+                flash("Add at least one question")
+                return redirect(url_for("create"))
+                
+            for q in questions:
+                original_type = q.get("type")
+                question_text = q.get("text")   
+
+                if not question_text or not question_text.strip():
+                    continue
+                
+                if original_type == "text":
+                    question_type_db = "open"
+                else:
+                    question_type_db = "multiple"
+
+                db.execute(
+                    "INSERT INTO questions (quiz_id, question_text, question_type) VALUES (?, ?, ?)",
+                    quiz_id,
+                    question_text,
+                    question_type_db,
+                )
+                question_id = db.execute("SELECT last_insert_rowid() as id")[0]["id"]
+
+                if original_type in ("multiple", "boolean"):      
+                    options = q.get("options") or []
+                    correct_index = q.get("correct_index")
+
+                    if not options or correct_index is None:
+                        continue
+                
+                    if correct_index >= len(options):
+                        continue
+
+                    for idx, option_text in enumerate(options):
+                        option_text = option_text.strip()
+                        if not option_text:
+                            continue
+
+                        is_correct = 1 if idx == correct_index else 0
+
+                        db.execute(
+                            "INSERT INTO options (question_id, options_text, is_correct) VALUES (?, ?, ?)",
+                            question_id,
+                            option_text,
+                            is_correct,
+                        )
+                        
+                elif original_type == "text":
+                    correct_answer = q.get("correct_answer")
+                    if correct_answer:
+                        db.execute(
+                            "INSERT INTO open_answers (question_id, correct_answer) VALUES(?, ?)",
+                            question_id,
+                            correct_answer,
+                        )
+
         return redirect(url_for("quiz_layout", id=quiz_id))
-    
+
     return render_template("create.html", categories=CATEGORIES)
 
 @app.route("/explore", methods=["GET"])
@@ -92,27 +167,136 @@ def quiz_layout(id):
 
 @app.route("/quiz/edit/<int:quiz_id>", methods=["GET", "POST"])
 def edit_quiz(quiz_id):
-    quiz = db.execute("SELECT * FROM quiz WHERE id = ?", quiz_id)
+    quiz = db.execute("SELECT * FROM quiz WHERE id=?", quiz_id)
 
-    if len(quiz) == 0:
+    if not quiz:
         abort(404)
 
     quiz = quiz[0]
 
     if request.method == "POST":
+
         title = request.form.get("title")
         category = request.form.get("category")
         description = request.form.get("description")
+        questions_json = request.form.get("questions_json")
 
-        db.execute("UPDATE quiz SET title = ?, category = ?, description = ? WHERE id = ?", title, category, description, quiz_id)
+        db.execute(
+            "UPDATE quiz SET title=?, category=?, description=? WHERE id=?",
+            title,
+            category,
+            description,
+            quiz_id,
+        )
+
+        old_questions = db.execute(
+            "SELECT id FROM questions WHERE quiz_id=?",
+            quiz_id
+        )
+
+        for q in old_questions:
+            db.execute("DELETE FROM options WHERE question_id=?", q["id"])
+            db.execute("DELETE FROM open_answers WHERE question_id=?", q["id"])
+
+        db.execute("DELETE FROM questions WHERE quiz_id=?", quiz_id)
+
+        if questions_json:
+
+            questions = json.loads(questions_json)
+
+            for q in questions:
+
+                question_text = q.get("text")
+                original_type = q.get("type")
+
+                if not question_text:
+                    continue
+
+                question_type_db = "open" if original_type == "text" else "multiple"
+
+                db.execute(
+                    "INSERT INTO questions (quiz_id, question_text, question_type) VALUES (?, ?, ?)",
+                    quiz_id,
+                    question_text,
+                    question_type_db,
+                )
+
+                question_id = db.execute("SELECT last_insert_rowid() as id")[0]["id"]
+
+                if original_type in ("multiple", "boolean"):
+
+                    options = q.get("options") or []
+                    correct_index = q.get("correct_index")
+
+                    for idx, option in enumerate(options):
+
+                        is_correct = 1 if idx == correct_index else 0
+
+                        db.execute(
+                            "INSERT INTO options (question_id, options_text, is_correct) VALUES (?, ?, ?)",
+                            question_id,
+                            option,
+                            is_correct,
+                        )
+
+                elif original_type == "text":
+
+                    correct_answer = q.get("correct_answer")
+
+                    if correct_answer:
+                        db.execute(
+                            "INSERT INTO open_answers (question_id, correct_answer) VALUES (?, ?)",
+                            question_id,
+                            correct_answer,
+                        )
 
         return redirect(url_for("quiz_layout", id=quiz_id))
 
-    return render_template("edit_quiz.html", quiz=quiz, categories=CATEGORIES)
+    questions = db.execute(
+        "SELECT * FROM questions WHERE quiz_id=?",
+        quiz_id
+    )
 
+    for q in questions:
+
+        if q["question_type"] == "multiple":
+
+            q["options"] = db.execute(
+                "SELECT * FROM options WHERE question_id=?",
+                q["id"]
+            )
+
+        elif q["question_type"] == "open":
+
+            answer = db.execute(
+                "SELECT * FROM open_answers WHERE question_id=?",
+                q["id"]
+            )
+
+            q["correct_answer"] = answer[0]["correct_answer"] if answer else ""
+
+    return render_template(
+        "edit_quiz.html",
+        quiz=quiz,
+        questions=questions,
+        categories=CATEGORIES
+    )
 
 @app.route("/quiz/delete/<int:quiz_id>", methods=["POST"])
 def delete_quiz(quiz_id):
+    quiz = db.execute("SELECT id FROM quiz WHERE id=?", quiz_id)
+
+    if not quiz:
+        abort(404)
+    
+    questions = db.execute("SELECT id from questions WHERE quiz_id=?", quiz_id)
+    
+    for q in questions:
+        db.execute("DELETE FROM options WHERE question_id=?", q["id"])
+        db.execute("DELETE FROM open_answers WHERE question_id=?", q["id"])
+    
+    db.execute("DELETE FROM questions WHERE quiz_id=?", quiz_id)
+    
     db.execute("DELETE FROM quiz WHERE id=?", quiz_id)
     
     return redirect("/explore")

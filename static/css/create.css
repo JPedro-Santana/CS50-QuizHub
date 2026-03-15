@@ -149,6 +149,15 @@ ion-icon[name="arrow-up-circle-outline"] {
   margin-top: 8px;
 }
 
+/* Flash Error Message */
+.msg{
+  color: red;
+  font-size: 16px;
+  padding-left: 8px;
+  padding-top: 12px;
+
+}
+
 /* Save Quiz button */
 .btn-save {
   background: linear-gradient(180deg, #2b9c51, #127533);

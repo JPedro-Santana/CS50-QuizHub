@@ -89,23 +89,10 @@
 
 .btn-search{
   color: white;
-  padding: 10px 25px;
+  padding: 10px 32px;
   background: linear-gradient(180deg, #1e62bb, #0a438d);
 }
 
 .btn-search:hover{
   opacity: 0.9;
-}
-
-.btn-solve {
-    background: #2d6cdf;
-    color: white;
-    padding: 15px 30px;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: 0.2s ease;
-}
-
-.btn-solve:hover {
-    opacity: 0.9;
 }
