@@ -1,8 +1,8 @@
 {% extends "layout.html" %} 
 
-{%block css_style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/create.css') }}"/> {% endblock %} 
-
 {% block title %} Create Quizzes {% endblock %}
+
+{%block style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/create.css') }}"/> {% endblock %} 
 
 {% block content %}
 <main>
@@ -10,6 +10,13 @@
     <h1>Create a new Quiz</h1>
   </div>
   <form method="POST" action="{{url_for('create')}}">
+     {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for msg in messages %}
+            <p class="msg">{{msg}}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
     <div class="form-group">
       <label for="title">Quiz Title</label>
       <input
@@ -28,13 +35,6 @@
         <option value="{{category}}">{{category}}</option>
         {% endfor %}
       </select>
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for msg in messages %}
-            <p class="msg">{{msg}}</p>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
     </div>
     <div class="form-group">
       <label for="description">Description</label>
@@ -50,7 +50,7 @@
       <input
         type="text"
         name="image"
-        placeholder="Ex: https://site.com/python.jpg"
+        placeholder="Ex: https://site.com/image.jpg"
       />
     </div>
 
@@ -74,16 +74,9 @@
           id="question-text"
           class="question-input"
           placeholder="Type your question..."
+          required
         />
       </div>
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for msg in messages %}
-            <p class="msg">{{msg}}</p>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
-
       <button type="button" class="btn btn-main" id="btn-add">
         Add Question
       </button>

@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 
-{%block css_style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/explore.css') }}"> {% endblock %}
-
 {% block title %} Explore Quizzes {% endblock %}
+
+{%block style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/explore.css') }}"> {% endblock %}
 
 {% block content %}
 <main>
@@ -12,16 +12,16 @@
       <input type="search" name="q" value="{{search_query}}" placeholder="Search quizzes..." />
 
     <select name="category" onchange="this.form.submit()">
-      <option value="" selected>All Categories</option>
+      <option value="">All Categories</option>
       {% for category in categories %}
           <option value="{{category}}" {% if category == selected_category %}selected{% endif %}>{{category}}</option>
       {% endfor %}
     </select>
 
     <select name="order" onchange="this.form.submit()">
-      <option value="recent"{% if category == recent %}selected{% endif %}>Most Recent</option>
-      <option value="old" {% if selected_order == old %}selected{% endif %}>Oldest</option>
-  <!--<option value="popular" {% if selected_popular == popular %}selected{% endif %}>Most Popular</option>-->
+      <option value="recent"{% if selected_order == "recent" %}selected{% endif %}>Most Recent</option>
+      <option value="old" {% if selected_order == "old" %}selected{% endif %}>Oldest</option>
+  <!--<option value="popular" {% if selected_order == "popular" %}selected{% endif %}>Most Popular</option>-->
     </select>
       <button class="btn btn-search">Search <ion-icon name="search-outline"></ion-icon></button>
   </form>
@@ -30,7 +30,7 @@
   {% for quiz in quizzes %} 
     <div class="quiz-container">
       <div class="quiz-image">
-        <a href="{{url_for('quiz_layout', id=quiz.id)}}"><img src="{{quiz.image}}" alt="Quiz Image"></a>
+        <a href="{{url_for('quiz_layout', id=quiz.id)}}"><img src="{{quiz.image}}" alt="{{quiz.title}}"></a>
       </div>
       <div class="quiz-info">
         <h2><a href="{{url_for('quiz_layout', id=quiz.id)}}">{{quiz.title}}</a></h2>

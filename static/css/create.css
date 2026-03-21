@@ -59,8 +59,12 @@ h2 {
   margin-bottom: 20px;
 }
 
-.question-item {
-  position: relative;
+/* Questions container */
+#questions-container {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 /* Remove Button*/
@@ -90,15 +94,8 @@ ion-icon[name="arrow-up-circle-outline"] {
   font-size: 24px; 
 }
 
-/* Questions container */
-#questions-container {
-  margin-top: 25px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 .question-item {
+  position: relative;
   background-color: #f5f7fc;
   border-radius: 6px;
   border: 1px solid #e0e6ef;
@@ -152,10 +149,8 @@ ion-icon[name="arrow-up-circle-outline"] {
 /* Flash Error Message */
 .msg{
   color: red;
-  font-size: 16px;
-  padding-left: 8px;
-  padding-top: 12px;
-
+  font-size: 18px;
+  padding-bottom: 14px;
 }
 
 /* Save Quiz button */

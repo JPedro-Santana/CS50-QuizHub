@@ -47,7 +47,8 @@
     background: #f5f6f8;
     padding: 10px;
     border-radius: 8px;
-    transition: 0.2s ease;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .quiz-container:hover {
@@ -68,7 +69,6 @@
 }
 
 .quiz-info h2 {
-    margin: 0;
     font-size: 20px;
     color: #2c3e50;
 }
@@ -88,11 +88,11 @@
 }
 
 .btn-search{
-  color: white;
   padding: 10px 32px;
   background: linear-gradient(180deg, #1e62bb, #0a438d);
 }
 
 .btn-search:hover{
   opacity: 0.9;
+  transform: scale(1.05);
 }

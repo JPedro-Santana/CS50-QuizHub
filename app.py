@@ -28,7 +28,8 @@ DEFAULT_IMAGES = {
 @app.route("/")
 @app.route("/index")
 def index():
-    return render_template("index.html")
+    quizzes = db.execute("SELECT * FROM quiz ORDER BY created_at DESC LIMIT 3")
+    return render_template("index.html", quizzes=quizzes)
 
 @app.route("/create", methods=["GET", "POST"])
 def create():

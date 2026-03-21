@@ -1,8 +1,6 @@
 @font-face {
   font-family: "Vegur";
   src: url(/static/fonts/Vegur-Regular.otf);
-  font-weight: normal;
-  font-style: normal;
 }
 
 :root{
@@ -128,18 +126,13 @@ section h2 {
 }
 
 /* Cards */
-section {
+.quiz-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
-}
-
-/* TITLE */
-section h2 {
   grid-column: span 3;
 }
 
-/* CARD */
 .quiz-card {
   background-color: #ffffff;
   border-radius: 8px;
@@ -169,16 +162,21 @@ section h2 {
   margin: 0 15px 15px;
 }
 
+/* Buttons */
+.btn {
+  font-size: 16px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+}
+
 /* CARD BUTTON */
 .btn-solve {
   width: calc(100% - 30px);
   margin: 0 15px 20px;
   padding: 12px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
   background-color: #1e62bb;
 }
 
@@ -226,15 +224,6 @@ footer {
   transform: translateY(-5px);
 }
 
-/* Buttons */
-.btn {
-  font-size: 16px;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
 /*-------- MODAL EDIT QUIZ --------*/
 .modal {
     display: none;
@@ -268,7 +257,6 @@ footer {
 .btn-cancel {
     background: #555;
     padding: 10px 16px;
-    color: white;
 }
 
 .btn-cancel:hover{
@@ -277,11 +265,17 @@ footer {
 
 .btn-delete{
   background-color: red;
-  padding: 10px 20px;
-  color: white;
 }
 
 .btn-delete:hover{
   background-color: #a50000;
 
+}
+
+.btn-edit{
+  background-color: #141414;
+}
+
+.btn-edit:hover{
+  background-color: #272626;
 }
