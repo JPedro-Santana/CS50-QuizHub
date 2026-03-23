@@ -1,35 +1,201 @@
-{% extends "layout.html" %} 
+{% extends "layout.html" %}
 
-{% block title %} {{quiz.title}} {% endblock %} 
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/quiz_layout.css') }}">
+{% endblock %}
+
+{% block title %}{{ quiz.title }}{% endblock %}
 
 {% block content %}
-<main class="quiz-layout-container">
-  <div class="quiz-header">
-    <h1>{{quiz.title}}</h1>
-    <button>{{quiz.category}}</button>
-    <p>{{quiz.description}}</p>
-  </div>
-  <form action="/quiz/edit/{{quiz.id}}" method="GET">
-    <button type="submit" class="btn btn-edit">Edit</button>
-  </form>
-  <form id="delete-form" action="/quiz/delete/{{ quiz.id }}" method="POST">
-    <button type="button" class="btn btn-delete" id="openDeleteModal">
-        Delete Quiz
-    </button>
-</form>
+<main class="quiz-play-page">
 
-<div id="deleteModal" class="modal">
-    <div class="modal-content">
-        <h2>Delete Quiz</h2>
-        <p>Are you sure you want to delete this quiz? This action cannot be undone.</p>
-
-        <div class="modal-actions">
-            <button id="cancelDelete" class="btn btn-cancel">Cancel</button>
-            <button id="confirmDelete" class="btn btn-delete">Delete</button>
-        </div>
+  <!--QUIZ HEADER-->
+  <div class="quiz-hero">
+    {% if quiz.image %}
+    <div class="quiz-hero-img">
+      <img src="{{ quiz.image }}" alt="{{ quiz.title }}">
     </div>
-</div>
-  <div class="result"></div>
+    {% endif %}
+    <div class="quiz-hero-info">
+      <span class="quiz-category-badge">{{ quiz.category }}</span>
+      <h1>{{ quiz.title }}</h1>
+      {% if quiz.description %}
+      <p class="quiz-desc">{{ quiz.description }}</p>
+      {% endif %}
+      <p class="quiz-meta">{{ questions | length }} question{% if questions | length != 1 %}s{% endif %}</p>
+    </div>
+  </div>
+
+  <!-- QUIZ FORM  (hidden after result) -->
+  {% if not result %}
+  <form method="POST" class="quiz-form" id="quiz-form">
+    {% for question in questions %}
+    <div class="qcard" data-type="{{ question.type }}">
+      <div class="qcard-num">{{ loop.index }}</div>
+      <h3 class="qcard-text">{{ question.text }}</h3>
+
+      {% if question.type == 'multiple' %}
+      <div class="play-options">
+        {% for option in question.options %}
+        <div class="play-option" tabindex="0"
+             role="radio" aria-checked="false"
+             data-value="{{ loop.index0 }}">
+          <span class="play-option-letter">{{ "ABCD"[loop.index0] if loop.index0 < 4 else loop.index0 }}</span>
+          <span class="play-option-text">{{ option.options_text }}</span>
+          <!-- Hidden radio that gets checked by JS -->
+          <input type="radio" name="q_{{ question.id }}" value="{{ loop.index0 }}"
+                 style="display:none" tabindex="-1">
+        </div>
+        {% endfor %}
+      </div>
+
+      {% else %}
+      <div class="open-wrap">
+        <input class="open-input" type="text"
+               name="q_{{ question.id }}"
+               placeholder="Type your answer…">
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="btn-submit-quiz">
+      Submit Answers
+      <ion-icon name="checkmark-done-outline"></ion-icon>
+    </button>
+  </form>
+  {% endif %}
+
+  <!-- RESULT SECTION -->
+  {% if result %}
+  <div class="result-section">
+
+    <!-- Score card -->
+    <div class="score-card">
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#e0e8f4" stroke-width="10"/>
+          <circle cx="60" cy="60" r="52" fill="none"
+                  stroke="{% if result.percentage == 100 %}#f0b429{% elif result.percentage >= 60 %}#27ae60{% else %}#e53935{% endif %}"
+                  stroke-width="10"
+                  stroke-dasharray="{{ (result.percentage / 100 * 326.7) | round(1) }} 326.7"
+                  stroke-dashoffset="81.7"
+                  stroke-linecap="round"/>
+        </svg>
+        <div class="score-ring-label">
+          <span class="score-pct">{{ result.percentage }}%</span>
+          <span class="score-frac">{{ result.correct_count }}/{{ result.total }}</span>
+        </div>
+      </div>
+
+      <div class="score-info">
+        <h2>Quiz Complete!</h2>
+        <p class="score-message">{{ result.message }}</p>
+        <div class="score-stats">
+          <div class="stat correct">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <span>{{ result.correct_count }} Correct</span>
+          </div>
+          <div class="stat wrong">
+            <ion-icon name="close-circle"></ion-icon>
+            <span>{{ result.total - result.correct_count }} Wrong</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Answer review -->
+    <h2 class="review-title">Answer Review</h2>
+
+    {% for question in questions %}
+    <div class="review-card {% if question.user_correct %}correct{% else %}wrong{% endif %}">
+      <div class="review-qnum">{{ loop.index }}</div>
+      <div class="review-body">
+        <p class="review-qtext">{{ question.text }}</p>
+
+        {% if question.type == 'multiple' %}
+          <div class="review-options">
+            {% for option in question.options %}
+            <div class="review-option
+              {% if option.is_correct %}review-correct{% endif %}
+              {% if question.user_answer == loop.index0 | string and not option.is_correct %}review-selected-wrong{% endif %}">
+              <span class="ro-letter">{{ "ABCD"[loop.index0] if loop.index0 < 4 else loop.index0 }}</span>
+              <span class="ro-text">{{ option.options_text }}</span>
+              {% if option.is_correct %}
+                <ion-icon name="checkmark-circle" class="ro-icon correct-icon"></ion-icon>
+              {% elif question.user_answer == loop.index0 | string %}
+                <ion-icon name="close-circle" class="ro-icon wrong-icon"></ion-icon>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          {% if question.user_answer is none %}
+            <p class="no-answer">⚠️ Not answered</p>
+          {% endif %}
+
+        {% else %}
+          <div class="review-open">
+            <div class="review-open-row {% if question.user_correct %}open-correct{% else %}open-wrong{% endif %}">
+              <strong>Your answer:</strong>
+              <span>{{ question.user_answer if question.user_answer else "— not answered —" }}</span>
+              {% if question.user_correct %}
+                <ion-icon name="checkmark-circle" class="ro-icon correct-icon"></ion-icon>
+              {% else %}
+                <ion-icon name="close-circle" class="ro-icon wrong-icon"></ion-icon>
+              {% endif %}
+            </div>
+            {% if not question.user_correct %}
+            <div class="review-open-row open-correct">
+              <strong>Correct answer:</strong>
+              <span>{{ question.correct_answer }}</span>
+              <ion-icon name="checkmark-circle" class="ro-icon correct-icon"></ion-icon>
+            </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Action buttons after result -->
+    <div class="result-actions">
+      <a class="btn-action btn-retry" href="{{ url_for('quiz_layout', id=quiz.id) }}">
+        <ion-icon name="refresh-outline"></ion-icon> Try Again
+      </a>
+      <a class="btn-action btn-explore" href="{{ url_for('explore') }}">
+        <ion-icon name="compass-outline"></ion-icon> Explore Quizzes
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- EDIT / DELETE ACTIONS -->
+  <div class="quiz-admin-actions">
+    <a class="btn btn-edit" href="{{ url_for('edit_quiz', quiz_id=quiz.id) }}">
+      <ion-icon name="create-outline"></ion-icon> Edit Quiz
+    </a>
+    <form id="delete-form" action="{{ url_for('delete_quiz', quiz_id=quiz.id) }}" method="POST" style="display:inline">
+      <button type="button" class="btn btn-delete" id="openDeleteModal">
+        <ion-icon name="trash-outline"></ion-icon> Delete Quiz
+      </button>
+    </form>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h2>Delete Quiz</h2>
+      <p>Are you sure you want to delete <strong>{{ quiz.title }}</strong>? This cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="cancelDelete" class="btn btn-cancel">Cancel</button>
+        <button id="confirmDelete" class="btn btn-delete">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+
 </main>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 <script src="/static/js/script.js"></script>
 {% endblock %}

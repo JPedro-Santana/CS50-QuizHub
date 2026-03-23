@@ -18,6 +18,232 @@
 /*-- Nav --*/
 nav {
   background: linear-gradient(180deg, #3676c4, #1f4f8f);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  height: 100px;
+}
+
+.logo {
+  margin-left: 80px;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+  margin-right: 80px;
+}
+
+nav ul li a {
+  position: relative;
+  color: white;
+  font-size: 18px;
+}
+
+/* Nav Hover Animation */
+nav ul li a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: #fad549;
+  transition: width 0.4s ease;
+}
+
+nav ul li a:hover::after {
+  color: white;
+  width: 100%;
+}
+
+/* ---------- Hero / Main ---------- */
+main {
+  background-color: #f5f7fc;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+main h1 {
+  color: #1f4077;
+  font-size: 46px;
+  margin-bottom: 15px;
+  padding-top: 20px;
+}
+
+.main-p {
+  color: #4a5d73;
+  font-size: 24px;
+  margin-bottom: 40px;
+}
+
+/* Main Buttons */
+.btn-main,
+.btn-create {
+  font-size: 20px;
+  padding: 15px 35px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  margin: 0 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-main {
+  background: linear-gradient(180deg, #1e62bb, #0a438d);
+}
+
+.btn-main:hover {
+  background: hsl(214, 71%, 45%);
+  transform: scale(1.1);
+}
+
+.btn-create {
+  background: linear-gradient(180deg, #2b9c51, #127533);
+}
+
+.btn-create:hover {
+  background: hsl(139, 60%, 38%);
+  transform: scale(1.1);
+}
+
+/* ---------- POPULAR QUIZZES ---------- */
+section {
+  padding: 60px;
+  background-color: #ffffff;
+}
+
+section h2 {
+  font-size: 26px;
+  color: #1f4077;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+/* Cards */
+.quiz-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  grid-column: span 3;
+}
+
+.quiz-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.quiz-card:hover {
+  transform: translateY(-5px);
+}
+
+.quiz-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.quiz-card .title {
+  font-size: 18px;
+  color: #1f4077;
+  margin: 15px;
+}
+
+.question-description {
+  color: #5b6f86;
+  margin: 0 15px 15px;
+}
+
+/* Buttons */
+.btn {
+  font-size: 16px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+}
+
+/* CARD BUTTON */
+.btn-solve {
+  width: calc(100% - 30px);
+  margin: 0 15px 20px;
+  padding: 12px;
+  background-color: #1e62bb;
+}
+
+.btn-solve:hover {
+  opacity: 0.9;
+}
+
+/* BUTTON COLOR VARIATION */
+.quiz-card:nth-child(2) .btn-solve {
+  background-color: #6a5acd;
+}
+
+.quiz-card:nth-child(3) .btn-solve {
+  background-color: #f28c28;
+}
+
+footer {
+  background: linear-gradient(180deg, #3676c4, #1f4f8f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
+
+.github-logo {
+  width: 70px;
+  height: 70px;
+  padding: 20px 0 12px 30px;
+}
+
+.github-logo:hover {
+  transition: transform 0.2s ease;
+  transform: translateY(-5px);
+}
+
+.name-logo a {
+  color: white;
+  font-weight: 200;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+.name-logo:hover {
+  transition: transform 0.2s ease;
+  transform: translateY(-5px);
+}
+
+/*-------- MODAL EDIT QUIZ --------*/
+@font-face {
+  font-family: "Vegur";
+  src: url(/static/fonts/Vegur-Regular.otf);
+}
+
+:root{
+  scroll-behavior: smooth;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Vegur", Helvetica, sans-serif;
+  text-decoration: none;
+}
+
+/*-- Nav --*/
+nav {
+  background: linear-gradient(180deg, #3676c4, #1f4f8f);
   padding-right: 30px;
   display: flex;
   justify-content: space-between;
@@ -224,58 +450,78 @@ footer {
   transform: translateY(-5px);
 }
 
-/*-------- MODAL EDIT QUIZ --------*/
+/*-------- MODAL DELETE QUIZ --------*/
 .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 30, 60, 0.55);
+  backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 }
 
 .modal-content {
-    background: #000000;
-    padding: 35px;
-    border-radius: 10px;
-    width: 400px;
-    text-align: center;
-    color: white;
+  background: #ffffff;
+  padding: 40px 36px 32px;
+  border-radius: 12px;
+  width: 420px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(15, 30, 60, 0.18);
+  border: 1px solid #1f4077;
 }
 
-.modal-content h2{
-  margin-bottom: 5px;
-  color: white;
+.modal-content h2 {
+  color: #1f4077;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.modal-content p {
+  color: #5b6f86;
+  font-size: 17px;
+  line-height: 1.55;
 }
 
 .modal-actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
+  margin-top: 28px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
 }
 
 .btn-cancel {
-    background: #555;
-    padding: 10px 16px;
+  background: #f0f4fb;
+  color: #1f4077;
+  border: 1.5px solid #d0ddf0;
+  padding: 11px 28px;
+  font-weight: 600;
+  transition: background 0.2s;
 }
 
-.btn-cancel:hover{
-  background-color: #6d6c6c;
+.btn-cancel:hover {
+  background: #dde6f5;
 }
 
-.btn-delete{
-  background-color: red;
+.btn-delete {
+  background: linear-gradient(135deg, #e53935, #b71c1c);
+  padding: 11px 28px;
+  font-weight: 600;
+  transition: opacity 0.2s, transform 0.15s;
 }
 
-.btn-delete:hover{
-  background-color: #a50000;
-
+.btn-delete:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
-.btn-edit{
-  background-color: #141414;
+.btn-edit {
+  background: #272626;
+  transition: opacity 0.2s, transform 0.15s;
 }
 
-.btn-edit:hover{
-  background-color: #272626;
+.btn-edit:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
 }

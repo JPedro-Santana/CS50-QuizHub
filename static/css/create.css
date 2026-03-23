@@ -1,87 +1,300 @@
-/* ---------- CREATE ---------- */
 form {
-  max-width: 700px;
-  margin: 20px auto 0;
+  max-width: 720px;
+  margin: 20px auto 60px;
   background-color: #ffffff;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  padding: 44px 48px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07);
   text-align: left;
 }
 
-/* Form Groups */
+/* ---------- FORM GROUPS ---------- */
 .form-group {
-  margin-bottom: 25px;
+  margin-bottom: 22px;
   display: flex;
   flex-direction: column;
 }
 
-/* Labels */
 .form-group label {
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: #1f4077;
   margin-bottom: 8px;
 }
 
-/* Inputs */
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #d0d7e2;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #d0d7e2;
   font-size: 15px;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fafbfd;
 }
 
-/* Focus */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
   border-color: #1e62bb;
-  box-shadow: 0 0 0 3px rgba(30, 98, 187, 0.1);
+  box-shadow: 0 0 0 3px rgba(30, 98, 187, 0.12);
+  background: #fff;
 }
 
-/* Question Block */
-.question-block {
-  background-color: #f5f7fc;
-  padding: 25px;
-  border-radius: 6px;
-  margin-top: 30px;
-  border: 1px solid #e0e6ef;
-}
-
-/* Section title */
+/* ---------- Question Block ---------- */
 h2 {
   color: #1f4077;
   margin-top: 40px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  font-size: 20px;
 }
 
-/* Questions container */
+.question-block {
+  background: linear-gradient(135deg, #f0f4fb 0%, #e8eef8 100%);
+  padding: 24px 28px;
+  border-radius: 10px;
+  border: 1.5px solid #d5e0f0;
+  margin-top: 10px;
+}
+
+.question-block .form-group:last-of-type {
+  margin-bottom: 16px;
+}
+
+.btn-add {
+  background: linear-gradient(135deg, #1e62bb, #0a438d);
+  padding: 11px 28px;
+  font-weight: 600;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-add:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ---------- QUESTIONS CONTAINER ---------- */
 #questions-container {
-  margin-top: 25px;
+  margin-top: 28px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
-/* Remove Button*/
-.question-item ion-icon[name="trash-outline"] {
-  position: absolute;
-  top: 12px;
-  right: 12px;
+/* ---------- QUESTION ITEM CARD ---------- */
+.question-item {
+  position: relative;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1.5px solid #e0e6ef;
+  padding: 20px 22px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s;
+}
+.question-item:hover {
+  box-shadow: 0 4px 18px rgba(30, 98, 187, 0.1);
+}
+
+/* Card header row */
+.q-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.q-type-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #1e62bb;
+  background: #e8f0fb;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.trash-icon {
   font-size: 18px;
-  color: red;
+  color: #c0392b;
   cursor: pointer;
+  transition: transform 0.15s, color 0.15s;
+}
+.trash-icon:hover {
+  transform: scale(1.2);
+  color: #e53935;
 }
 
-/* Back to Question Input Button*/
-ion-icon[name="arrow-up-circle-outline"] {
+/* Question text */
+.q-text {
+  font-size: 17px;
+  color: #1f4077;
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+/* ---------- OPTIONS HINT ---------- */
+.options-hint {
+  font-size: 13px;
+  color: #7a8fa8;
+  margin-bottom: 10px;
+}
+.options-hint span {
+  color: #27ae60;
+  font-weight: 600;
+}
+
+/* ---------- OPTION INPUTS GRID ---------- */
+.option-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ---------- OPTION BUTTON / DIV ---------- */
+.option-btn-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 2px solid #d0d7e2;
+  background: #fafbfd;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  user-select: none;
+}
+
+.option-btn-wrap:hover {
+  border-color: #1e62bb;
+  background: #f0f5ff;
+}
+
+/* ✅ CORRECT ANSWER — green border focus */
+.option-btn-wrap.is-correct {
+  border-color: #27ae60;
+  background: #f0fbf4;
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.18);
+}
+
+.option-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e8eef8;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e62bb;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+.option-btn-wrap.is-correct .option-letter {
+  background: #27ae60;
+  color: #fff;
+}
+
+.option-text-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: #2c3e50;
+  outline: none;
+  min-width: 0;
+}
+.option-text-input::placeholder {
+  color: #b0bcc8;
+}
+
+.correct-icon {
+  font-size: 18px;
+  color: #d0d7e2;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.option-btn-wrap.is-correct .correct-icon {
+  color: #27ae60;
+}
+
+/* ---------- BOOLEAN OPTIONS ---------- */
+.boolean-options {
+  grid-template-columns: 1fr 1fr;
+}
+
+.bool-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  flex: 1;
+}
+
+/* ---------- OPEN ANSWER ---------- */
+.open-answer-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.open-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6e8fb4;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.open-answer-input {
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 2px solid #27ae60;
+  background: #f0fbf4;
+  font-size: 15px;
+  color: #2c3e50;
+  outline: none;
+  transition: box-shadow 0.2s;
+}
+.open-answer-input:focus {
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.18);
+}
+
+/* ---------- FLASH MESSAGE ---------- */
+.msg {
+  color: #e53935;
+  font-size: 15px;
+  padding-bottom: 14px;
+  font-weight: 600;
+}
+
+/* ---------- SAVE BUTTON ---------- */
+.btn-save {
+  background: linear-gradient(135deg, #2b9c51, #127533);
+  width: 100%;
+  margin-top: 24px;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border-radius: 10px;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-save:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* ---------- FLOATING BACK-TO-TOP BUTTON ---------- */
+.back-to-top-btn {
   position: fixed;
-  left: 100px;
-  bottom: 120px;
+  left: 24px;
+  bottom: 100px;
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -89,78 +302,16 @@ ion-icon[name="arrow-up-circle-outline"] {
   background: #1e62bb;
   color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  font-size: 24px; 
-}
-
-.question-item {
-  position: relative;
-  background-color: #f5f7fc;
-  border-radius: 6px;
-  border: 1px solid #e0e6ef;
-  padding: 16px 18px;
-}
-
-.question-item h3 {
-  font-size: 18px;
-  color: #1f4077;
-  margin-bottom: 10px;
-}
-
-.question-item h3 span {
-  font-weight: 500;
-  font-size: 14px;
-  color: #6c7a93;
-}
-
-/* Multiple choice options*/
-.question-item .options {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 16px;
-  margin-top: 8px;
-}
-
-.question-item .options label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  font-size: 24px;
+  transition: transform 0.2s, opacity 0.2s;
 }
 
-.question-item .options input[type="text"], .input {
-  flex: 1;
-  padding: 10px 16px;
-  height: 44px;
-  border-radius: 4px;
-  border: 1px solid #d0d7e2;
-  font-size: 16px;
-}
-
-/* True/False spacing */
-.question-item > label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-right: 32px;
-  margin-top: 8px;
-}
-
-/* Flash Error Message */
-.msg{
-  color: red;
-  font-size: 18px;
-  padding-bottom: 14px;
-}
-
-/* Save Quiz button */
-.btn-save {
-  background: linear-gradient(180deg, #2b9c51, #127533);
-  color: white;
-  width: 100%;
-  margin-top: 20px;
-}
-
-.btn-save:hover {
-  background: hsl(140, 58%, 24%);
+.back-to-top-btn:hover {
+  transform: translateY(-3px);
+  opacity: 0.9;
 }

@@ -2,102 +2,162 @@
 
 {% block style %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/create.css') }}">
+<style>
+  /* Edit-page extras */
+  .edit-page-title {
+    text-align: center;
+    color: #1f4077;
+    font-size: 32px;
+    margin-bottom: 8px;
+    padding-top: 40px;
+  }
+  .edit-page-sub {
+    text-align: center;
+    color: #7a8fa8;
+    font-size: 15px;
+    margin-bottom: 0;
+  }
+
+  /* Add-question mini-panel inside the edit form */
+  .add-question-panel {
+    background: linear-gradient(135deg, #f0f4fb, #e8eef8);
+    border: 1.5px dashed #b0c4de;
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin-top: 32px;
+    margin-bottom: 8px;
+  }
+  .add-question-panel h3 {
+    color: #1f4077;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  .add-question-panel .inline-row {
+    display: grid;
+    grid-template-columns: 160px 1fr auto;
+    gap: 12px;
+    align-items: flex-end;
+  }
+  .add-question-panel select,
+  .add-question-panel input[type="text"] {
+    padding: 11px 13px;
+    border-radius: 8px;
+    border: 1.5px solid #d0d7e2;
+    font-size: 14px;
+    background: #fafbfd;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .add-question-panel select:focus,
+  .add-question-panel input[type="text"]:focus {
+    border-color: #1e62bb;
+    box-shadow: 0 0 0 3px rgba(30, 98, 187, 0.12);
+  }
+  .add-question-panel label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1f4077;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* Editor actions bottom bar */
+  .editor-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+</style>
 {% endblock %}
 
-{% block title %}Edit Quiz{% endblock %}
+{% block title %}Edit — {{ quiz.title }}{% endblock %}
 
 {% block content %}
-<main class="quiz-editor">
+<main>
+  <h1 class="edit-page-title">Edit Quiz</h1>
+  <p class="edit-page-sub">Update your quiz info and questions below.</p>
 
-<h1>Edit Quiz</h1>
+  <form method="POST" id="quiz-form">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <p class="msg">{{ msg }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-<form method="POST" id="quiz-form">
+    <!-- ── Quiz meta ── -->
+    <div class="form-group">
+      <label for="edit-title">Quiz Title</label>
+      <input type="text" id="edit-title" name="title" value="{{ quiz.title }}" required>
+    </div>
 
-<div class="form-group">
-<label>Title</label>
-<input type="text" name="title" value="{{ quiz.title }}" required>
-</div>
+    <div class="form-group">
+      <label for="edit-category">Category</label>
+      <select id="edit-category" name="category" required>
+        {% for category in categories %}
+          <option value="{{ category }}" {% if category == quiz.category %}selected{% endif %}>
+            {{ category }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
 
-<div class="form-group">
-<label>Category</label>
-<select name="category">
-{% for category in categories %}
-<option value="{{ category }}"
-{% if category == quiz.category %}selected{% endif %}>
-{{ category }}
-</option>
-{% endfor %}
-</select>
-</div>
+    <div class="form-group">
+      <label for="edit-desc">Description</label>
+      <textarea id="edit-desc" name="description" rows="3" maxlength="148">{{ quiz.description }}</textarea>
+    </div>
 
-<div class="form-group">
-<label>Description</label>
-<textarea name="description">{{ quiz.description }}</textarea>
-</div>
+    <hr style="border:none; border-top:1.5px solid #e0e6ef; margin: 30px 0 10px;">
 
-<hr>
+    <!-- ── Questions list (populated by JS) ── -->
+    <h2>Questions</h2>
+    <div id="questions-container"></div>
 
-<h2>Questions</h2>
+    <!-- ── Add question panel ── -->
+    <div class="add-question-panel">
+      <h3>➕ Add a new question</h3>
+      <div class="inline-row">
+        <div>
+          <label>Type</label>
+          <select class="question-type" id="question-type-select">
+            <option value="multiple">Multiple Choice</option>
+            <option value="boolean">True / False</option>
+            <option value="text">Open Answer</option>
+          </select>
+        </div>
+        <div>
+          <label>Question text</label>
+          <input type="text" id="question-text" placeholder="Type your question…">
+        </div>
+        <div>
+          <label style="visibility:hidden">Add</label>
+          <button type="button" class="btn btn-save" id="btn-add" style="width:auto; margin:0; padding: 11px 24px;">
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
 
-<div id="questions-container">
+    <!-- Hidden field that carries the serialised questions -->
+    <input type="hidden" name="questions_json" id="questions-json">
 
-{% for q in questions %}
-<div class="question-item" data-type="{{ q.question_type }}">
+    <!-- Initial questions seed for JS (Jinja → JSON) -->
+    <input type="hidden" id="initial-questions" value='{{ questions | tojson }}'>
 
-<h3 contenteditable="true">{{ q.question_text }}</h3>
-
-{% if q.question_type == "multiple" %}
-
-<div class="options">
-
-{% for option in q.options %}
-
-<label>
-<input type="radio"
-name="answer_{{ q.id }}"
-{% if option.is_correct %}checked{% endif %}
->
-
-<input
-type="text"
-value="{{ option.options_text }}"
->
-</label>
-
-{% endfor %}
-
-</div>
-
-{% endif %}
-
-{% if q.question_type == "open" %}
-
-<div class="open-answer">
-
-<label>Correct Answer</label>
-
-<input
-type="text"
-name="correct_answer"
-value="{{ q.correct_answer }}"
->
-
-</div>
-
-{% endif %}
-
-</div>
-{% endfor %}
-
-</div>
-
-<input type="hidden" name="questions_json" id="questions-json">
-
-<div class="editor-actions">
-<button type="submit" class="btn btn-save">Update Quiz</button>
-</div>
-
-</form>
-
+    <div class="editor-actions">
+      <button type="submit" class="btn btn-save" style="flex:1">Update Quiz</button>
+      <a href="{{ url_for('quiz_layout', id=quiz.id) }}" class="btn btn-edit"
+         style="display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; padding: 0 28px;">
+        Cancel
+      </a>
+    </div>
+  </form>
 </main>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script src="/static/js/script.js"></script>
 {% endblock %}

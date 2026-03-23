@@ -28,10 +28,10 @@
 
   <div class="quiz-list">
   {% for quiz in quizzes %} 
-    <div class="quiz-container">
-      <div class="quiz-image">
-        <a href="{{url_for('quiz_layout', id=quiz.id)}}"><img src="{{quiz.image}}" alt="{{quiz.title}}"></a>
-      </div>
+  <div class="quiz-container">
+    <div class="quiz-image">
+      <a href="{{url_for('quiz_layout', id=quiz.id)}}"><img src="{{quiz.image}}" alt="{{quiz.title}}"></a>
+    </div>
       <div class="quiz-info">
         <h2><a href="{{url_for('quiz_layout', id=quiz.id)}}">{{quiz.title}}</a></h2>
         <p>{{quiz.description}}</p>
