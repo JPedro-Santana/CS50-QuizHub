@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/create.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_quiz.css') }}">
+{% endblock %}
+
+{% block title %}Edit {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<main>
+  <h1 class="edit-page-title">Edit {{quiz.title}}</h1>
+
+  <form method="POST" id="quiz-form">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <p class="msg">{{ msg }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- ── Quiz meta ── -->
+    <div class="form-group">
+      <label for="edit-title">Quiz Title</label>
+      <input type="text" id="edit-title" name="title" value="{{ quiz.title }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-category">Category</label>
+      <select id="edit-category" name="category" required>
+        {% for category in categories %}
+          <option value="{{ category }}" {% if category == quiz.category %}selected{% endif %}>
+            {{ category }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-desc">Description</label>
+      <textarea id="edit-desc" name="description" rows="3" maxlength="148">{{ quiz.description }}</textarea>
+    </div>
+
+    <hr>
+    
+    <!-- ── Questions list (populated by JS) ── -->
+    <h2>Questions</h2>
+    <div id="questions-container">
+      {% for question in questions %}
+        <div class="question-item" data-type="{{ question.type }}">
+          <div class="q-header">
+            <span class="q-type-badge">
+              {% if question.type == "text" %}
+                Open Answer
+              {% else %}
+                Multiple Choice
+              {% endif %}
+            </span>
+            <ion-icon name="trash-outline" class="trash-icon" aria-label="Remove question"></ion-icon>
+          </div>
+          <h3 class="q-text">{{ question.text }}</h3>
+
+          {% if question.type == "multiple" %}
+            <p class="options-hint">Click an option to mark it as correct</p>
+            <div class="option-inputs">
+              {% for option in question.options %}
+                <div class="option-btn-wrap {% if loop.index0 == question.correct_index %}is-correct{% endif %}" data-index="{{ loop.index0 }}">
+                  <span class="option-letter">{{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[loop.index0] }}</span>
+                  <input
+                    type="text"
+                    class="option-text-input"
+                    placeholder="Option {{ loop.index }}"
+                    value="{{ option }}"
+                    {% if loop.index <= 2 %}required{% endif %}
+                  />
+                  {% if loop.index0 == question.correct_index %}
+                    <ion-icon name="checkmark-circle" class="correct-icon"></ion-icon>
+                  {% else %}
+                    <ion-icon name="ellipse-outline" class="correct-icon"></ion-icon>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="open-answer-wrap">
+              <label class="open-label">Correct answer:</label>
+              <input
+                type="text"
+                class="open-answer-input"
+                placeholder="Type the correct answer…"
+                value="{{ question.correct_answer }}"
+                required
+              />
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+       <!-- Hidden field that carries the serialised questions -->
+    <input type="hidden" name="questions_json" id="questions-json">
+
+    <!-- ── Add question panel ── -->
+    <div class="add-question-panel">
+      <h3> Add a new question</h3>
+      <div class="inline-row">
+        <div>
+          <label>Type</label>
+          <select class="question-type" id="question-type-select">
+            <option value="multiple">Multiple Choice</option>
+            <option value="boolean">True / False</option>
+            <option value="text">Open Answer</option>
+          </select>
+        </div>
+        <div>
+          <label>Question text</label>
+          <input type="text" id="question-text" placeholder="Type your question…">
+        </div>
+        <div>
+          <button type="button" class="btn btn-save" id="btn-add">
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+
+ 
+
+    <div class="editor-actions">
+      <button type="submit" class="btn btn-save">Update Quiz</button>
+      <a href="{{ url_for('quiz_layout', id=quiz.id) }}" class="btn btn-edit">
+        Cancel
+      </a>
+    </div>
+  </form>
+</main>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script src="/static/js/script.js"></script>
+{% endblock %}

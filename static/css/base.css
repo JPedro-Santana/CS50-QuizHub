@@ -1,8 +1,6 @@
 @font-face {
   font-family: "Vegur";
   src: url(/static/fonts/Vegur-Regular.otf);
-  font-weight: normal;
-  font-style: normal;
 }
 
 * {
@@ -10,15 +8,16 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Vegur", Helvetica, sans-serif;
+  text-decoration: none;
 }
 
-/* ---------- NAV ---------- */
+/*-- Nav --*/
 nav {
   background: linear-gradient(180deg, #3676c4, #1f4f8f);
-  padding-right: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 40px;
   height: 100px;
 }
 
@@ -30,17 +29,16 @@ nav ul {
   display: flex;
   list-style: none;
   gap: 30px;
-  margin-right: 90px;
+  margin-right: 80px;
 }
 
 nav ul li a {
   position: relative;
   color: white;
-  text-decoration: none;
   font-size: 18px;
-  padding-bottom: 4px;
 }
 
+/* Nav Hover Animation */
 nav ul li a::after {
   content: "";
   position: absolute;
@@ -52,13 +50,12 @@ nav ul li a::after {
   transition: width 0.4s ease;
 }
 
-/* hover animation */
 nav ul li a:hover::after {
   color: white;
   width: 100%;
 }
 
-/* ---------- HERO / MAIN ---------- */
+/* ---------- Hero / Main ---------- */
 main {
   background-color: #f5f7fc;
   padding: 80px 20px;
@@ -69,7 +66,7 @@ main h1 {
   color: #1f4077;
   font-size: 46px;
   margin-bottom: 15px;
-  padding-top: 40px;
+  padding-top: 20px;
 }
 
 .main-p {
@@ -83,8 +80,8 @@ main h1 {
 .btn-create {
   font-size: 20px;
   padding: 15px 35px;
-  border: none;
   border-radius: 6px;
+  border: none;
   color: white;
   cursor: pointer;
   margin: 0 10px;
@@ -92,19 +89,21 @@ main h1 {
 }
 
 .btn-main {
-  background:linear-gradient(180deg, #1e62bb, #0a438d);
+  background: linear-gradient(180deg, #1e62bb, #0a438d);
 }
 
 .btn-main:hover {
-  background: hsl(214, 72%, 28%);
+  background: hsl(214, 71%, 45%);
+  transform: scale(1.1);
 }
 
 .btn-create {
-  background: linear-gradient(180deg, #2b9c51, #127533) ;
+  background: linear-gradient(180deg, #2b9c51, #127533);
 }
 
 .btn-create:hover {
-  background: hsl(140, 58%, 24%);
+  background: hsl(139, 60%, 38%);
+  transform: scale(1.1);
 }
 
 /* ---------- POPULAR QUIZZES ---------- */
@@ -121,19 +120,14 @@ section h2 {
   padding-bottom: 10px;
 }
 
-/* CARDS GRID */
-section {
+/* Cards */
+.quiz-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
-}
-
-/* TITLE */
-section h2 {
   grid-column: span 3;
 }
 
-/* CARD */
 .quiz-card {
   background-color: #ffffff;
   border-radius: 8px;
@@ -158,33 +152,69 @@ section h2 {
   margin: 15px;
 }
 
-.question-number {
+.question-description {
   color: #5b6f86;
   margin: 0 15px 15px;
 }
 
+/* Buttons */
+.btn {
+  font-size: 16px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+}
+
 /* CARD BUTTON */
-.btn-resolve {
+.btn-solve {
   width: calc(100% - 30px);
   margin: 0 15px 20px;
   padding: 12px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
   background-color: #1e62bb;
 }
 
-.btn-resolve:hover {
+.btn-solve:hover {
   opacity: 0.9;
 }
 
 /* BUTTON COLOR VARIATION */
-.quiz-card:nth-child(2) .btn-resolve {
+.quiz-card:nth-child(2) .btn-solve {
   background-color: #6a5acd;
 }
 
-.quiz-card:nth-child(3) .btn-resolve {
+.quiz-card:nth-child(3) .btn-solve {
   background-color: #f28c28;
+}
+
+footer {
+  background: linear-gradient(180deg, #3676c4, #1f4f8f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
+
+.github-logo {
+  width: 70px;
+  height: 70px;
+  padding: 20px 0 12px 30px;
+}
+
+.github-logo:hover {
+  transition: transform 0.2s ease;
+  transform: translateY(-5px);
+}
+
+.name-logo a {
+  color: white;
+  font-weight: 200;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+.name-logo:hover {
+  transition: transform 0.2s ease;
+  transform: translateY(-5px);
 }

@@ -1,44 +1,92 @@
-    {% extends "layout.html" %}
+{% extends "layout.html" %} 
 
-    {% block content %}
-    <main>
-    <form method="POST" action="{{url_for('create')}}">
-         <div class="form-group">
-        <label for="title">Título do Quiz</label>
-        <input type="text" id="title" name="title" placeholder="Ex: Quiz de História Geral" />
-      </div>
+{% block title %} Create Quiz {% endblock %}
+
+{%block style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/create.css') }}"/> {% endblock %} 
+
+{% block content %}
+<main>
+  <div class="container">
+    <h1>Create a new Quiz</h1>
+  </div>
+  <form method="POST" action="{{url_for('create')}}">
+     {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for msg in messages %}
+            <p class="msg">{{msg}}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    <div class="form-group">
+      <label for="title">Quiz Title</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        placeholder="Ex: History Quiz"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" name="category" required>
+        <option value="" selected>Select Category</option>
+        {% for category in categories %}
+        <option value="{{category}}">{{category}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        name="description"
+        rows="3"
+        maxlength="148"
+      ></textarea>
+    </div>
+    <div class="form-group">
+      <label>Insert a Image URL (Optional)</label>
+      <input
+        type="text"
+        name="image"
+        placeholder="Ex: https://site.com/image.jpg"
+      />
+    </div>
+
+    <h2>Add Questions</h2>
+
+    <div class="question-block">
       <div class="form-group">
-        <label for="category">Categoria</label>
-        <select id="category" name="category">
-          <option>História</option>
-          <option>Programação</option>
-          <option>Ciência</option>
-          <option>Entretenimento</option>
+        <label>Question type</label>
+        <select name="question-type" class="question-type" required>
+          <option value="multiple">Multiple Choices</option>
+          <option value="boolean">True or False</option>
+          <option value="text">Open Answer</option>
         </select>
       </div>
+
       <div class="form-group">
-        <label for="description">Descrição</label>
-        <textarea id="description" name="description" rows="3"></textarea>
+        <label>Question</label>
+        <input
+          type="text"
+          name="question-text"
+          id="question-text"
+          class="question-input"
+          placeholder="Type your question..."
+        />
       </div>
-
-      <h2>Pergunta</h2>
-
-      <div class="question-box">
-        <div class="form-group">
-          <label>Tipo de Pergunta</label>
-          <select>
-            <option>Múltipla Escolha</option>
-            <option>Resposta Livre</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Pergunta</label>
-          <input type="text" placeholder="Digite a pergunta..." />
-        </div>
-
-      <button type="button" class="btn btn-secondary">Adicionar Pergunta</button>
-      <br /><br />
-      <button type="submit" class="btn btn-primary">Salvar Quiz</button>
-    </form>
-    {% endblock %}
+      <button type="button" class="btn btn-add" id="btn-add">
+        Add Question
+      </button>
+    </div>
+    <div id="questions-container"></div>
+    <br /><br />
+    <button type="submit" class="btn btn-save">Save Quiz</button>
+    <input type="hidden" name="questions_json" id="questions-json">
+  </form>
+</main>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script src="/static/js/script.js"></script>
+{% endblock %}

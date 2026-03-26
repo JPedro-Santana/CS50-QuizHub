@@ -1,0 +1,78 @@
+hr{
+    border:none; 
+    border-top:1.5px solid #e0e6ef; 
+    margin: 30px 0 10px;
+}
+
+/* Edit-page extras */
+  .edit-page-title {
+    text-align: center;
+    color: #1f4077;
+    font-size: 32px;
+    margin-bottom: 8px;
+    padding-top: 40px;
+  }
+
+  /* Add-question mini-panel inside the edit form */
+  .add-question-panel {
+    background: linear-gradient(135deg, #f0f4fb, #e8eef8);
+    border: 1.5px dashed #b0c4de;
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin-top: 32px;
+    margin-bottom: 8px;
+  }
+  .add-question-panel h3 {
+    color: #1f4077;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  .add-question-panel .inline-row {
+    display: grid;
+    grid-template-columns: 160px 1fr auto;
+    gap: 12px;
+    align-items: flex-end;
+  }
+  .add-question-panel select,
+  .add-question-panel input[type="text"] {
+    padding: 11px 13px;
+    border-radius: 8px;
+    border: 1.5px solid #d0d7e2;
+    font-size: 14px;
+    background: #fafbfd;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .add-question-panel select:focus,
+  .add-question-panel input[type="text"]:focus {
+    border-color: #1e62bb;
+    box-shadow: 0 0 0 3px rgba(30, 98, 187, 0.12);
+  }
+  .add-question-panel label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1f4077;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* Editor actions bottom bar */
+  .editor-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    width: auto;
+  }
+
+  .btn-edit {
+  background: #272626;
+  transition: opacity 0.2s, transform 0.15s;
+  margin-top: 24px;
+}
+
+.btn-edit:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}

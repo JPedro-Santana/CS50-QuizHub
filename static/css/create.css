@@ -1,0 +1,312 @@
+form {
+  max-width: 720px;
+  margin: 20px auto 60px;
+  background-color: #ffffff;
+  padding: 44px 48px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07);
+  text-align: left;
+}
+
+/* ---------- FORM GROUPS ---------- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #1f4077;
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 12px 14px;
+  border: 1.5px solid #d0d7e2;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fafbfd;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #1e62bb;
+  box-shadow: 0 0 0 3px rgba(30, 98, 187, 0.12);
+  background: #fff;
+}
+
+/* ---------- Question Block ---------- */
+h2 {
+  color: #1f4077;
+  font-size: 20px;
+  margin: 40px 0 16px;
+}
+
+.question-block {
+  background: linear-gradient(135deg, #f0f4fb 0%, #e8eef8 100%);
+  padding: 24px 28px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1.5px solid #d5e0f0;
+}
+
+.question-block .form-group:last-of-type {
+  margin-bottom: 16px;
+}
+
+.btn-add {
+  background: linear-gradient(135deg, #1e62bb, #0a438d);
+  padding: 11px 28px;
+  font-weight: 600;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-add:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ---------- QUESTIONS CONTAINER ---------- */
+#questions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+/* ---------- QUESTION ITEM CARD ---------- */
+.question-item {
+  position: relative;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1.5px solid #e0e6ef;
+  padding: 20px 22px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s;
+}
+.question-item:hover {
+  box-shadow: 0 4px 18px rgba(30, 98, 187, 0.1);
+}
+
+/* Card header row */
+.q-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.q-type-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #1e62bb;
+  background: #e8f0fb;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.trash-icon {
+  font-size: 20px;
+  color: #c0392b;
+  cursor: pointer;
+  transition: transform 0.15s, color 0.15s;
+}
+.trash-icon:hover {
+  transform: scale(1.2);
+  color: #e53935;
+}
+
+/* Question text */
+.q-text {
+  font-size: 17px;
+  color: #1f4077;
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+/* ---------- OPTIONS HINT ---------- */
+.options-hint {
+  font-size: 13px;
+  color: #7a8fa8;
+  margin-bottom: 10px;
+}
+
+/* ---------- OPTION INPUTS GRID ---------- */
+.option-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ---------- OPTION BUTTON / DIV ---------- */
+.option-btn-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 2px solid #d0d7e2;
+  background: #fafbfd;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  user-select: none;
+}
+
+.option-btn-wrap:hover {
+  border-color: #1e62bb;
+  background: #f0f5ff;
+}
+
+/* ✅ CORRECT ANSWER — green border focus */
+.option-btn-wrap.is-correct {
+  border-color: #27ae60;
+  background: #f0fbf4;
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.18);
+}
+
+.option-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e8eef8;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e62bb;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+.option-btn-wrap.is-correct .option-letter {
+  background: #27ae60;
+  color: #fff;
+}
+
+.option-text-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: #2c3e50;
+  outline: none;
+  min-width: 0;
+}
+.option-text-input::placeholder {
+  color: #b0bcc8;
+}
+
+.correct-icon {
+  font-size: 18px;
+  color: #d0d7e2;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.option-btn-wrap.is-correct .correct-icon {
+  color: #27ae60;
+}
+
+/* ---------- BOOLEAN OPTIONS ---------- */
+.boolean-options {
+  grid-template-columns: 1fr 1fr;
+}
+
+.bool-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  flex: 1;
+}
+
+/* ---------- OPEN ANSWER ---------- */
+.open-answer-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.open-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6e8fb4;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.open-answer-input {
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 2px solid #27ae60;
+  background: #f0fbf4;
+  font-size: 15px;
+  color: #2c3e50;
+  outline: none;
+  transition: box-shadow 0.2s;
+}
+.open-answer-input:focus {
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.18);
+}
+
+/* ---------- FLASH MESSAGE ---------- */
+.msg {
+  color: #e53935;
+  font-size: 15px;
+  padding-bottom: 14px;
+  font-weight: 600;
+}
+
+/* ---------- SAVE BUTTON ---------- */
+.btn-save {
+  background: linear-gradient(135deg, #2b9c51, #127533);
+  width: 100%;
+  margin-top: 24px;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border-radius: 10px;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-save:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* ---------- FLOATING BACK-TO-TOP BUTTON ---------- */
+.back-to-top-btn {
+  position: fixed;
+  left: 34px;
+  bottom: 100px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #1e62bb;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.back-to-top-btn:hover {
+  transform: translateY(-3px);
+  opacity: 0.9;
+}

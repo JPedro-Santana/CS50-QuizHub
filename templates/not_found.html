@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{%block style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/not_found.css') }}"> {% endblock %}
+
+{% block title %}404 Not Found{% endblock %}
+
+{% block content %}
+<main class="not-found-page">
+  <div class="not-found-card">
+    <span class="not-found-code">404</span>
+    <h1 class="not-found-title">Page Not Found</h1>
+    <p class="not-found-message">The page you are looking for does not exist or may have been removed.</p>
+    <a href="{{ url_for('explore') }}" class="btn-main">Explore Quizzes</a>
+  </div>
+</main>
+{% endblock %}

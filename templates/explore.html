@@ -1,18 +1,48 @@
-    {% extends "layout.html" %}
-    <main>
-        {% block content %}
-        <h1 class="title">Explore Quizzes</h1>
-        <input type="search" placeholder="Search Quizzes">
-        <select name="category" id="category">
-            <option value="history">History</option>
-        </select>
-        <select name="filters" id="filters">
-            <option value="recents">More Recents</option>
-        </select>
-        <div class="quiz-grid">
-            
-        </div>
-        {% endblock %}
-    </main>
-    
-   
+{% extends "layout.html" %}
+
+{% block title %} Explore Quizzes {% endblock %}
+
+{%block style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/explore.css') }}"> {% endblock %}
+
+{% block content %}
+<main>
+  <h1 class="page-title">Explore Quizzes</h1>
+
+  <form method="GET" action="{{url_for('explore')}}" class="explore-controls">
+      <input type="search" name="q" value="{{search_query}}" placeholder="Search quizzes..." />
+
+    <select name="category" onchange="this.form.submit()">
+      <option value="">All Categories</option>
+      {% for category in categories %}
+          <option value="{{category}}" {% if category == selected_category %}selected{% endif %}>{{category}}</option>
+      {% endfor %}
+    </select>
+
+    <select name="order" onchange="this.form.submit()">
+      <option value="recent"{% if selected_order == "recent" %}selected{% endif %}>Most Recent</option>
+      <option value="old" {% if selected_order == "old" %}selected{% endif %}>Oldest</option>
+  <!--<option value="popular" {% if selected_order == "popular" %}selected{% endif %}>Most Popular</option>-->
+    </select>
+      <button class="btn btn-search">Search <ion-icon name="search-outline"></ion-icon></button>
+  </form>
+
+  <div class="quiz-list">
+  {% for quiz in quizzes %} 
+  <div class="quiz-container">
+    <div class="quiz-image">
+      <a href="{{url_for('quiz_layout', id=quiz.id)}}"><img src="{{quiz.image}}" alt="{{quiz.title}}"></a>
+    </div>
+      <div class="quiz-info">
+        <h2><a href="{{url_for('quiz_layout', id=quiz.id)}}">{{quiz.title}}</a></h2>
+        <p>{{quiz.description}}</p>
+      </div>
+      <div class="quiz-action">
+        <a href="{{url_for('quiz_layout', id=quiz.id)}}"><button class="btn btn-solve">Solve Quiz</button></a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</main>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+{% endblock %}
