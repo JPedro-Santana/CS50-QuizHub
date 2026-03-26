@@ -36,10 +36,11 @@ def index():
 @app.route("/create", methods=["GET", "POST"])
 def create():
     if request.method == "POST":
-        title = request.form.get("title")
+        title = (request.form.get("title") or "").strip()
         category = request.form.get("category")
-        description = request.form.get("description")
-        image = request.form.get("image")
+        description = (request.form.get("description") or "").strip()
+        image = (request.form.get("image") or "").strip()
+        questions_json = request.form.get("questions_json")
 
         if not image:
             image = DEFAULT_IMAGES.get(category)
@@ -48,64 +49,65 @@ def create():
             flash("Title and Category are required.")
             return redirect("/create")
 
+        if questions_json:
+            try:
+                questions = json.loads(questions_json)
+            except json.JSONDecodeError:
+                questions = []
+        else:
+            questions = []
+
+        if not questions:
+            flash("Add at least one question")
+            return redirect(url_for("create"))
+
         db.execute(
             "INSERT INTO quiz (title, category, description, image) VALUES(?, ?, ?, ?)",
             title, category, description, image,
         )
         quiz_id = db.execute("SELECT last_insert_rowid() as id")[0]["id"]
 
-        questions_json = request.form.get("questions_json")
-        if questions_json:
-            try:
-                questions = json.loads(questions_json)
-            except json.JSONDecodeError:
-                questions = []
+        for q in questions:
+            original_type = q.get("type")
+            question_text = q.get("text")
 
-            if not questions:
-                flash("Add at least one question")
-                return redirect(url_for("create"))
+            if not question_text or not question_text.strip():
+                continue
 
-            for q in questions:
-                original_type = q.get("type")
-                question_text = q.get("text")
+            question_type_db = "open" if original_type == "text" else "multiple"
 
-                if not question_text or not question_text.strip():
+            db.execute(
+                "INSERT INTO questions (quiz_id, question_text, question_type) VALUES (?, ?, ?)",
+                quiz_id, question_text, question_type_db,
+            )
+            question_id = db.execute("SELECT last_insert_rowid() as id")[0]["id"]
+
+            if original_type in ("multiple", "boolean"):
+                options = q.get("options") or []
+                correct_index = q.get("correct_index")
+
+                if not options or correct_index is None:
+                    continue
+                if correct_index >= len(options):
                     continue
 
-                question_type_db = "open" if original_type == "text" else "multiple"
-
-                db.execute(
-                    "INSERT INTO questions (quiz_id, question_text, question_type) VALUES (?, ?, ?)",
-                    quiz_id, question_text, question_type_db,
-                )
-                question_id = db.execute("SELECT last_insert_rowid() as id")[0]["id"]
-
-                if original_type in ("multiple", "boolean"):
-                    options = q.get("options") or []
-                    correct_index = q.get("correct_index")
-
-                    if not options or correct_index is None:
+                for idx, option_text in enumerate(options):
+                    option_text = option_text.strip()
+                    if not option_text:
                         continue
-                    if correct_index >= len(options):
-                        continue
+                    is_correct = 1 if idx == correct_index else 0
+                    db.execute(
+                        "INSERT INTO options (question_id, options_text, is_correct) VALUES (?, ?, ?)",
+                        question_id, option_text, is_correct,
+                    )
 
-                    for idx, option_text in enumerate(options):
-                        option_text = option_text.strip()
-                        if not option_text:
-                            continue
-                        is_correct = 1 if idx == correct_index else 0
-                        db.execute(
-                            "INSERT INTO options (question_id, options_text, is_correct) VALUES (?, ?, ?)",
-                            question_id, option_text, is_correct,
-                        )
-
-                elif original_type == "text":
-                    correct_answer = q.get("correct_answer")
-                    if correct_answer:
-                        db.execute(
-                            "INSERT INTO open_answers (question_id, correct_answer) VALUES(?, ?)",
-                            question_id, correct_answer,
-                        )
+            elif original_type == "text":
+                correct_answer = q.get("correct_answer")
+                if correct_answer:
+                    db.execute(
+                        "INSERT INTO open_answers (question_id, correct_answer) VALUES(?, ?)",
+                        question_id, correct_answer,
+                    )
 
         return redirect(url_for("quiz_layout", id=quiz_id))
 
@@ -279,9 +281,9 @@ def edit_quiz(quiz_id):
         question_data.append(q_item)
 
     if request.method == "POST":
-        title = request.form.get("title")
+        title = (request.form.get("title") or "").strip()
         category = request.form.get("category")
-        description = request.form.get("description")
+        description = (request.form.get("description") or "").strip()
         questions_json = request.form.get("questions_json")
 
         if not title or not category:
@@ -297,7 +299,10 @@ def edit_quiz(quiz_id):
             flash("Quiz must contain questions.")
             return redirect(url_for("edit_quiz", quiz_id=quiz_id))
 
-        new_questions = json.loads(questions_json)
+        try:
+            new_questions = json.loads(questions_json)
+        except json.JSONDecodeError:
+            new_questions = []
         if len(new_questions) == 0:
             flash("Quiz must contain at least one question.")
             return redirect(url_for("edit_quiz", quiz_id=quiz_id))

@@ -67,7 +67,7 @@ function createQuestionElement(type, text, data = {}) {
     const correctIndex = data.correct_index !== undefined ? data.correct_index : -1; // 0=True, 1=False
     questionDiv.innerHTML = `
       ${header}
-      <p class="options-hint">Click to select the correct answer <span>(green border = correct answer)</span></p>
+      <p class="options-hint">Click to select the correct answer</p>
       <div class="option-inputs boolean-options">
         <div class="option-btn-wrap ${correctIndex === 0 ? "is-correct" : ""}" data-index="0">
           <span class="option-letter">T</span>
@@ -153,26 +153,6 @@ function addQuestion() {
 
   questionInput.value = "";
   updateBackButtonVisibility();
-}
-
-/* ---- Render questions from saved data (edit page) ---- */
-function addQuestionFromData(item) {
-  const questionDiv = createQuestionElement(item.type, item.text, item);
-  questionsContainer.appendChild(questionDiv);
-  updateBackButtonVisibility();
-}
-
-/* Load initial questions for the edit page */
-const initialQuestionsInput = document.getElementById("initial-questions");
-if (initialQuestionsInput && questionsContainer) {
-  try {
-    const initialQuestions = JSON.parse(initialQuestionsInput.value);
-    if (Array.isArray(initialQuestions)) {
-      initialQuestions.forEach((q) => addQuestionFromData(q));
-    }
-  } catch (e) {
-    console.error("Could not parse initial questions", e);
-  }
 }
 
 /* ---- Serialize questions to JSON before submit ---- */
@@ -273,6 +253,15 @@ if (form && questionsContainer) {
 /* ---- Remove question on trash icon click ---- */
 if (questionsContainer) {
   questionsContainer.addEventListener("click", (event) => {
+    const optionWrap = event.target.closest(".option-btn-wrap");
+    if (optionWrap && !event.target.closest("input")) {
+      const questionDiv = optionWrap.closest(".question-item");
+      if (questionDiv) {
+        selectCorrectOption(questionDiv, parseInt(optionWrap.dataset.index));
+      }
+      return;
+    }
+
     const trashIcon = event.target.closest('.trash-icon');
     if (!trashIcon) return;
     const questionDiv = trashIcon.closest(".question-item");
