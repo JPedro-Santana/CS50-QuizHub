@@ -3,7 +3,7 @@
 ### Video Demo:
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=tq9AtzCuWp8
 " target="_blank"><img src="http://img.youtube.com/vi/tq9AtzCuWp8/0.jpg" 
-alt="IMAGE ALT TEXT HERE" width="280" height="280" border="10" /></a>
+alt="QuizHub Thumbnail" width="280" height="280" border="10" /></a>
 
 ## Description
 QuizHub is a web application that allows users to create, explore and solve quizzes on different topics.
