@@ -33,10 +33,6 @@ msgid "Sports"
 msgstr ""
 
 #: app.py:31
-msgid "Tecnology"
-msgstr ""
-
-#: app.py:32
 msgid "Technology"
 msgstr ""
 
@@ -106,10 +102,6 @@ msgstr ""
 
 #: templates/create.html:39 templates/edit_quiz.html:45
 msgid "Insert a Image URL (Optional)"
-msgstr ""
-
-#: templates/create.html:40 templates/edit_quiz.html:49
-msgid "Ex: https://site.com/image.jpg"
 msgstr ""
 
 #: templates/create.html:43
