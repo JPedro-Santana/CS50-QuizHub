@@ -22,19 +22,20 @@
             <div class="lang-dropdown">
                 <button class="lang-btn" type="button" id="langDropdownBtn" aria-label="{{ _('Change Language') }}">
                     {% for lang in languages %}
-                        {% if lang.code == current_locale %}
-                            <span class="lang-flag">{{ lang.flag }}</span>
-                            <span class="lang-text">{{ lang.name }}</span>
-                        {% endif %}
+                    {% if lang.code == current_locale %}
+                    <span class="lang-flag">{{ lang.flag }}</span>
+                    <span class="lang-text">{{ lang.name }}</span>
+                    {% endif %}
                     {% endfor %}
                     <span class="lang-caret">▾</span>
                 </button>
                 <div class="lang-menu" id="langMenu">
                     {% for lang in languages %}
-                        <a href="{{ url_for('set_language', lang=lang.code) }}" class="lang-item {% if lang.code == current_locale %}active{% endif %}">
-                            <span class="lang-flag">{{ lang.flag }}</span>
-                            <span class="lang-name">{{ lang.name }}</span>
-                        </a>
+                    <a href="{{ url_for('set_language', lang=lang.code) }}"
+                        class="lang-item {% if lang.code == current_locale %}active{% endif %}">
+                        <span class="lang-flag">{{ lang.flag }}</span>
+                        <span class="lang-name">{{ lang.name }}</span>
+                    </a>
                     {% endfor %}
                 </div>
             </div>
@@ -71,21 +72,21 @@
       }
     </script>
     <script>
-      const i18nEl = document.getElementById('i18n-data');
-      window.I18N = i18nEl ? JSON.parse(i18nEl.textContent) : {};
+        const i18nEl = document.getElementById('i18n-data');
+        window.I18N = i18nEl ? JSON.parse(i18nEl.textContent) : {};
 
-      // Language dropdown toggle
-      const langBtn = document.getElementById('langDropdownBtn');
-      const langMenu = document.getElementById('langMenu');
-      if (langBtn && langMenu) {
-        langBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          langMenu.classList.toggle('show');
-        });
-        document.addEventListener('click', () => {
-          langMenu.classList.remove('show');
-        });
-      }
+        // Language dropdown toggle
+        const langBtn = document.getElementById('langDropdownBtn');
+        const langMenu = document.getElementById('langMenu');
+        if (langBtn && langMenu) {
+            langBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                langMenu.classList.toggle('show');
+            });
+            document.addEventListener('click', () => {
+                langMenu.classList.remove('show');
+            });
+        }
     </script>
 </body>
 

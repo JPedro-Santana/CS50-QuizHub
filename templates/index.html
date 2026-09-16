@@ -1,25 +1,48 @@
-    {% extends "layout.html" %}
+{% extends "layout.html" %}
 
-    {% block content %}
-    <main>
-        <h1>{{ _("Create, share and solve quizzes!") }}</h1>
-        <p class="main-p">{{ _("Create and play quizzes on any topic.") }}</p>
-        <div class="hero-actions">
-            <a href="{{url_for('explore')}}" class="btn-main">{{ _("Explore Quizzes") }}</a>
-            <a href="{{url_for('create')}}" class="btn-create">{{ _("Create Quiz") }}</a>
-        </div>
-    </main>
-    <section>
-        <h2>{{ _("Recent Quizzes") }}</h2>
-        <div class="quiz-container">
-            {% for quiz in quizzes %}
-            <div class="quiz-card">
-                <img src="{{quiz.image}}" alt="{{quiz.title}}">
-                <h3 class="title">{{quiz.title}}</h3>
-                <p class="question-description">{{quiz.description}}</p>
-                <a href="{{url_for('quiz_layout', id=quiz.id)}}"><button class="btn btn-solve">{{ _("Solve Quiz") }}</button></a>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-    {% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">{% endblock %}
+
+{% block content %}
+<div class="hero-wrapper">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <main class="hero-main">
+    <h1 class="hero-title">{{ _("Create, share and") }}<br>
+      <span class="hero-highlight">{{ _("solve quizzes!") }}</span>
+    </h1>
+    <p class="main-p">{{ _("Create and play quizzes on any topic.") }}</p>
+
+    <div class="hero-actions">
+      <a href="{{ url_for('explore') }}" class="btn-main">{{ _("Explore Quizzes") }}</a>
+      <a href="{{ url_for('create') }}" class="btn-create">{{ _("Create Quiz") }}</a>
+    </div>
+
+  </main>
+
+  <!-- Wave divider -->
+  <div class="hero-wave" aria-hidden="true">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#ffffff" />
+    </svg>
+  </div>
+</div>
+
+<section>
+  <h2>{{ _("Recent Quizzes") }}</h2>
+  <div class="quiz-container">
+    {% for quiz in quizzes %}
+    <div class="quiz-card">
+      <img src="{{quiz.image}}" alt="{{quiz.title}}">
+      <h3 class="title">{{quiz.title}}</h3>
+      <p class="question-description">{{quiz.description}}</p>
+      <a href="{{url_for('quiz_layout', id=quiz.id)}}"><button class="btn btn-solve">{{ _("Solve Quiz") }}</button></a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

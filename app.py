@@ -1,6 +1,6 @@
 from cs50 import SQL
 from flask import Flask, redirect, render_template, request, url_for, abort, flash, session
-from flask_babel import Babel, _, gettext, lazy_gettext, get_locale
+from flask_babel import Babel, _
 import json
 
 app = Flask(__name__)
@@ -18,7 +18,7 @@ CATEGORIES = [
     "History",
     "Science",
     "Sports",
-    "Tecnology",
+    "Technology",
 ]
 
 # Ensure category names are discoverable for translation extraction
@@ -28,8 +28,7 @@ CATEGORY_TRANSLATIONS = [
     _("History"),
     _("Science"),
     _("Sports"),
-    _("Tecnology"),
-    _("Technology"),
+    _("Technology")
 ]
 
 DEFAULT_IMAGES = {
@@ -38,8 +37,7 @@ DEFAULT_IMAGES = {
     "History": "/static/images/categories/history.jpg",
     "Science": "/static/images/categories/science.jpg",
     "Sports": "/static/images/categories/sports.jpg",
-    "Tecnology": "/static/images/categories/tecnology.jpg",
-    "Technology": "/static/images/categories/tecnology.jpg",
+    "Technology": "/static/images/categories/tecnology.jpg"
 }
 
 def select_locale():
@@ -182,7 +180,10 @@ def save_quiz_questions(quiz_id, questions):
 @app.route("/index")
 def index():
     quizzes = db.execute("SELECT * FROM quiz ORDER BY created_at DESC LIMIT 3")
-    return render_template("index.html", quizzes=quizzes)
+    return render_template(
+        "index.html",
+        quizzes=quizzes
+    )
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -222,21 +223,33 @@ def explore():
     category = request.args.get("category", "all")
     order = request.args.get("order", "recent")
     search = request.args.get("q", "")
+    page = max(1, int(request.args.get("page", 1) or 1))
+    per_page = 6
 
-    query = "SELECT * FROM quiz WHERE 1=1"
+    base_query = "FROM quiz WHERE 1=1"
     params = []
 
     if category and category != "all":
-        query += " AND category = ?"
+        base_query += " AND category = ?"
         params.append(category)
 
     if search:
-        query += " AND title LIKE ?"
+        base_query += " AND title LIKE ?"
         params.append(f"%{search}%")
 
-    query += " ORDER BY created_at DESC" if order == "recent" else " ORDER BY created_at ASC"
+    order_clause = " ORDER BY created_at DESC" if order == "recent" else " ORDER BY created_at ASC"
 
-    quizzes = db.execute(query, *params)
+    total = db.execute(f"SELECT COUNT(*) as count {base_query}", *params)[0]["count"]
+    total_pages = max(1, (total + per_page - 1) // per_page)
+
+    # Clamp page to valid range
+    page = min(page, total_pages)
+
+    offset = (page - 1) * per_page
+    quizzes = db.execute(
+        f"SELECT * {base_query}{order_clause} LIMIT ? OFFSET ?",
+        *params, per_page, offset
+    )
 
     return render_template(
         "explore.html",
@@ -245,6 +258,8 @@ def explore():
         selected_category=category,
         selected_order=order,
         search_query=search,
+        page=page,
+        total_pages=total_pages,
     )
 
 

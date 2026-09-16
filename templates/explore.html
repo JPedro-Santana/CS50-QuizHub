@@ -2,45 +2,72 @@
 
 {% block title %} {{ _("Explore Quizzes") }} {% endblock %}
 
-{%block style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/explore.css') }}"> {% endblock %}
+{%block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/explore.css') }}"> {% endblock %}
 
 {% block content %}
 <main>
   <h1 class="page-title">{{ _("Explore Quizzes") }}</h1>
 
   <form method="GET" action="{{url_for('explore')}}" class="explore-controls">
-      <input type="search" name="q" value="{{search_query}}" placeholder="{{ _('Search quizzes...') }}" />
+    <input type="search" name="q" value="{{search_query}}" placeholder="{{ _('Search quizzes...') }}" />
 
     <select name="category" onchange="this.form.submit()">
       <option value="">{{ _("All Categories") }}</option>
       {% for category in categories %}
-          <option value="{{category}}" {% if category == selected_category %}selected{% endif %}>{{ _(category) }}</option>
+      <option value="{{category}}" {% if category==selected_category %}selected{% endif %}>{{ _(category) }}</option>
       {% endfor %}
     </select>
 
     <select name="order" onchange="this.form.submit()">
-      <option value="recent"{% if selected_order == "recent" %}selected{% endif %}>{{ _("Most Recent") }}</option>
-      <option value="old" {% if selected_order == "old" %}selected{% endif %}>{{ _("Oldest") }}</option>
+      <option value="recent" {% if selected_order=="recent" %}selected{% endif %}>{{ _("Most Recent") }}</option>
+      <option value="old" {% if selected_order=="old" %}selected{% endif %}>{{ _("Oldest") }}</option>
     </select>
-      <button class="btn btn-search">{{ _("Search") }} <ion-icon name="search-outline"></ion-icon></button>
+    <button class="btn btn-search">{{ _("Search") }} <ion-icon name="search-outline"></ion-icon></button>
   </form>
 
   <div class="quiz-list">
-  {% for quiz in quizzes %} 
-  <div class="quiz-container">
-    <div class="quiz-image">
-      <a href="{{url_for('quiz_layout', id=quiz.id)}}"><img src="{{quiz.image}}" alt="{{quiz.title}}"></a>
-    </div>
+    {% for quiz in quizzes %}
+    <div class="quiz-container">
+      <div class="quiz-image">
+        <a href="{{url_for('quiz_layout', id=quiz.id)}}"><img src="{{quiz.image}}" alt="{{quiz.title}}"></a>
+      </div>
       <div class="quiz-info">
         <h2><a href="{{url_for('quiz_layout', id=quiz.id)}}">{{quiz.title}}</a></h2>
         <p>{{quiz.description}}</p>
       </div>
       <div class="quiz-action">
-        <a href="{{url_for('quiz_layout', id=quiz.id)}}"><button class="btn btn-solve">{{ _("Solve Quiz") }}</button></a>
+        <a href="{{url_for('quiz_layout', id=quiz.id)}}"><button class="btn btn-solve">{{ _("Solve Quiz")
+            }}</button></a>
       </div>
+    </div>
+    {% else %}
+    <div class="not-found">
+      <p>{{_('No quizzes found, Create your own quiz to share with the world!')}}</p>
+      <a href="{{url_for('create')}}"><button class="btn btn-create">{{ _("Create Quiz") }}</button></a>
     </div>
     {% endfor %}
   </div>
+
+  {% if total_pages > 1 %}
+  <nav class="pagination" aria-label="{{ _('Page navigation') }}">
+    {% if page > 1 %}
+    <a href="{{ url_for('explore', page=page-1, category=selected_category, order=selected_order, q=search_query) }}"
+      class="btn btn-page" aria-label="{{ _('Previous page') }}">&#8592; {{ _("Previous") }}</a>
+    {% endif %}
+
+    {% for p in range(1, total_pages + 1) %}
+    <a href="{{ url_for('explore', page=p, category=selected_category, order=selected_order, q=search_query) }}"
+      class="btn btn-page {% if p == page %}active{% endif %}" aria-label="{{ _('Page') }} {{ p }}" {% if p==page
+      %}aria-current="page" {% endif %}>{{ p }}</a>
+    {% endfor %}
+
+    {% if page < total_pages %} <a
+      href="{{ url_for('explore', page=page+1, category=selected_category, order=selected_order, q=search_query) }}"
+      class="btn btn-page" aria-label="{{ _('Next page') }}">{{ _("Next") }} &#8594;</a>
+      {% endif %}
+  </nav>
+  {% endif %}
 </main>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

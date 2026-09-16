@@ -4,4 +4,3 @@ __pycache__/
 .venv/
 test-results/
 babel.cfg
-messages.pot

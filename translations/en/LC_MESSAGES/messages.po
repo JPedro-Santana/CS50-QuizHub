@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.0\n"
+"Project-Id-Version:  1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-05 17:22-0300\n"
+"POT-Creation-Date: 2026-09-16 10:03-0300\n"
 "PO-Revision-Date: 2026-09-05 17:23-0300\n"
 "Last-Translator: QuizHub Team\n"
 "Language: en\n"
@@ -38,50 +38,47 @@ msgid "Sports"
 msgstr "Sports"
 
 #: app.py:31
-msgid "Tecnology"
-msgstr "Technology"
-
-#: app.py:32
 msgid "Technology"
 msgstr "Technology"
 
-#: app.py:201
+#: app.py:202
 msgid "Title and Category are required."
 msgstr "Title and Category are required."
 
-#: app.py:205
+#: app.py:206
 msgid "Add at least one question"
 msgstr "Add at least one question"
 
-#: app.py:334
+#: app.py:349
 msgid "Perfect score! You're a genius! 🏆"
 msgstr "Perfect score! You're a genius! 🏆"
 
-#: app.py:336
+#: app.py:351
 msgid "Excellent work! Almost perfect! 🌟"
 msgstr "Excellent work! Almost perfect! 🌟"
 
-#: app.py:338
+#: app.py:353
 msgid "Well done! Solid performance! 👏"
 msgstr "Well done! Solid performance! 👏"
 
-#: app.py:340
+#: app.py:355
 msgid "Good effort! Room for improvement! 💪"
 msgstr "Good effort! Room for improvement! 💪"
 
-#: app.py:342
+#: app.py:357
 msgid "Keep practicing! You'll do better next time! 📚"
 msgstr "Keep practicing! You'll do better next time! 📚"
 
-#: app.py:397
+#: app.py:412
 msgid "Title and category are required."
 msgstr "Title and category are required."
 
-#: app.py:401
+#: app.py:416
 msgid "Quiz must contain at least one question."
 msgstr "Quiz must contain at least one question."
 
-#: templates/create.html:3 templates/index.html:8 templates/layout.html:20
+#: templates/create.html:3 templates/explore.html:47 templates/index.html:22
+#: templates/layout.html:20
 msgid "Create Quiz"
 msgstr "Create Quiz"
 
@@ -113,10 +110,6 @@ msgstr "Description"
 msgid "Insert a Image URL (Optional)"
 msgstr "Insert a Image URL (Optional)"
 
-#: templates/create.html:40 templates/edit_quiz.html:49
-msgid "Ex: https://site.com/image.jpg"
-msgstr "Ex: https://site.com/image.jpg"
-
 #: templates/create.html:43
 msgid "Add Questions"
 msgstr "Add Questions"
@@ -125,20 +118,20 @@ msgstr "Add Questions"
 msgid "Question type"
 msgstr "Question type"
 
-#: templates/create.html:49 templates/layout.html:54
+#: templates/create.html:49 templates/layout.html:55
 msgid "Multiple Choices"
 msgstr "Multiple Choices"
 
-#: templates/create.html:50 templates/layout.html:55
+#: templates/create.html:50 templates/layout.html:56
 msgid "True or False"
 msgstr "True or False"
 
 #: templates/create.html:51 templates/edit_quiz.html:63
-#: templates/edit_quiz.html:121 templates/layout.html:56
+#: templates/edit_quiz.html:121 templates/layout.html:57
 msgid "Open Answer"
 msgstr "Open Answer"
 
-#: templates/create.html:56 templates/layout.html:70
+#: templates/create.html:56 templates/layout.html:71
 msgid "Question"
 msgstr "Question"
 
@@ -166,20 +159,20 @@ msgstr "Questions"
 msgid "Multiple Choice"
 msgstr "Multiple Choice"
 
-#: templates/edit_quiz.html:73 templates/layout.html:57
+#: templates/edit_quiz.html:73 templates/layout.html:58
 msgid "Click an option to mark it as correct"
 msgstr "Click an option to mark it as correct"
 
-#: templates/edit_quiz.html:81 templates/layout.html:59
+#: templates/edit_quiz.html:81 templates/layout.html:60
 msgid "Option"
 msgstr "Option"
 
-#: templates/edit_quiz.html:95 templates/layout.html:63
+#: templates/edit_quiz.html:95 templates/layout.html:64
 #: templates/quiz_layout.html:149
 msgid "Correct answer:"
 msgstr "Correct answer:"
 
-#: templates/edit_quiz.html:99 templates/layout.html:64
+#: templates/edit_quiz.html:99 templates/layout.html:65
 msgid "Type the correct answer…"
 msgstr "Type the correct answer…"
 
@@ -215,45 +208,77 @@ msgstr "Update Quiz"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: templates/explore.html:3 templates/explore.html:9 templates/index.html:7
+#: templates/explore.html:3 templates/explore.html:10 templates/index.html:21
 #: templates/layout.html:19 templates/not_found.html:13
 #: templates/quiz_layout.html:166
 msgid "Explore Quizzes"
 msgstr "Explore Quizzes"
 
-#: templates/explore.html:12
+#: templates/explore.html:13
 msgid "Search quizzes..."
 msgstr "Search quizzes..."
 
-#: templates/explore.html:15
+#: templates/explore.html:16
 msgid "All Categories"
 msgstr "All Categories"
 
-#: templates/explore.html:22
+#: templates/explore.html:23
 msgid "Most Recent"
 msgstr "Most Recent"
 
-#: templates/explore.html:23
+#: templates/explore.html:24
 msgid "Oldest"
 msgstr "Oldest"
 
-#: templates/explore.html:25
+#: templates/explore.html:26
 msgid "Search"
 msgstr "Search"
 
-#: templates/explore.html:39 templates/index.html:18
+#: templates/explore.html:40 templates/index.html:43
 msgid "Solve Quiz"
 msgstr "Solve Quiz"
 
-#: templates/index.html:5
-msgid "Create, share and solve quizzes!"
-msgstr "Create, share and solve quizzes!"
+#: templates/explore.html:46
+msgid "No quizzes found, Create your own quiz to share with the world!"
+msgstr "No quizzes found. Create your own quiz to share with the world!"
 
-#: templates/index.html:6
+#: templates/explore.html:53
+msgid "Page navigation"
+msgstr "Page navigation"
+
+#: templates/explore.html:56
+msgid "Previous page"
+msgstr "Previous page"
+
+#: templates/explore.html:56
+msgid "Previous"
+msgstr "Previous"
+
+#: templates/explore.html:61
+msgid "Page"
+msgstr "Page"
+
+#: templates/explore.html:67
+msgid "Next page"
+msgstr "Next page"
+
+#: templates/explore.html:67
+msgid "Next"
+msgstr "Next"
+
+#: templates/index.html:15
+msgid "Create, share and"
+msgstr "Create, share and"
+
+#: templates/index.html:16
+msgid "solve quizzes!"
+msgstr "solve quizzes!"
+
+#: templates/index.html:18
 msgid "Create and play quizzes on any topic."
 msgstr "Create and play quizzes on any topic."
 
-#: templates/index.html:11
+#: templates/index.html:36
 msgid "Recent Quizzes"
 msgstr "Recent Quizzes"
 
@@ -261,39 +286,39 @@ msgstr "Recent Quizzes"
 msgid "Change Language"
 msgstr "Change Language"
 
-#: templates/layout.html:58
+#: templates/layout.html:59
 msgid "Click to select the correct answer"
 msgstr "Click to select the correct answer"
 
-#: templates/layout.html:60
+#: templates/layout.html:61
 msgid "(required)"
 msgstr "(required)"
 
-#: templates/layout.html:61
+#: templates/layout.html:62
 msgid "True"
 msgstr "True"
 
-#: templates/layout.html:62
+#: templates/layout.html:63
 msgid "False"
 msgstr "False"
 
-#: templates/layout.html:65
+#: templates/layout.html:66
 msgid "please add at least 2 options."
 msgstr "please add at least 2 options."
 
-#: templates/layout.html:66
+#: templates/layout.html:67
 msgid "click one option to mark it as the correct answer (green border)."
 msgstr "click one option to mark it as the correct answer (green border)."
 
-#: templates/layout.html:67
+#: templates/layout.html:68
 msgid "please provide the correct answer."
 msgstr "please provide the correct answer."
 
-#: templates/layout.html:68
+#: templates/layout.html:69
 msgid "please select True or False as the correct answer."
 msgstr "please select True or False as the correct answer."
 
-#: templates/layout.html:69
+#: templates/layout.html:70
 msgid "Add at least one question before saving."
 msgstr "Add at least one question before saving."
 
@@ -376,3 +401,4 @@ msgstr "This cannot be undone."
 #: templates/quiz_layout.html:191
 msgid "Yes, Delete"
 msgstr "Yes, Delete"
+
