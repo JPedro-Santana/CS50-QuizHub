@@ -1,0 +1,22 @@
+# render.yaml — Configuração declarativa do Render
+# Documentação: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: quizhub
+    runtime: python
+    buildCommand: pip install -r requirements.txt && python init_db.py
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true          # Render gera automaticamente uma chave segura
+      - key: DATABASE_URL
+        fromDatabase:
+          name: quizhub-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+databases:
+  - name: quizhub-db
+    plan: free                       # PostgreSQL gratuito do Render

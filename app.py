@@ -1,16 +1,57 @@
-from cs50 import SQL
+import os
+import psycopg2
+import psycopg2.extras
 from flask import Flask, redirect, render_template, request, url_for, abort, flash, session
 from flask_babel import Babel, _
 import json
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "my-secret-key"
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
 
 app.config["LANGUAGES"] = ["en", "pt_BR", "es"]
 app.config["BABEL_DEFAULT_LOCALE"] = "en"
 app.config["BABEL_TRANSLATION_DIRECTORIES"] = "translations"
 
-db = SQL("sqlite:///quiz.db")
+
+# ── PostgreSQL helper ─────────────────────────────────────────────────────────
+class Database:
+    """Lightweight psycopg2 wrapper with a cs50-like .execute() interface.
+
+    Returns a list of dicts for SELECT / INSERT … RETURNING queries,
+    and an empty list for INSERT / UPDATE / DELETE without RETURNING.
+    """
+
+    def __init__(self, url: str):
+        # Render supplies 'postgres://' but psycopg2 requires 'postgresql://'
+        if url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql://", 1)
+        self._url = url
+
+    def execute(self, query: str, *args):
+        conn = psycopg2.connect(self._url)
+        try:
+            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+                cur.execute(query, args or None)
+                conn.commit()
+                if cur.description:
+                    return [dict(row) for row in cur.fetchall()]
+                return []
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
+
+
+_database_url = os.environ.get("DATABASE_URL")
+if not _database_url:
+    raise RuntimeError(
+        "DATABASE_URL environment variable is not set. "
+        "Set it to your PostgreSQL connection string before starting the app."
+    )
+
+db = Database(_database_url)
+# ─────────────────────────────────────────────────────────────────────────────
 
 CATEGORIES = [
     "About Me",
@@ -28,7 +69,7 @@ CATEGORY_TRANSLATIONS = [
     _("History"),
     _("Science"),
     _("Sports"),
-    _("Technology")
+    _("Technology"),
 ]
 
 DEFAULT_IMAGES = {
@@ -37,7 +78,7 @@ DEFAULT_IMAGES = {
     "History": "/static/images/categories/history.jpg",
     "Science": "/static/images/categories/science.jpg",
     "Sports": "/static/images/categories/sports.jpg",
-    "Technology": "/static/images/categories/tecnology.jpg"
+    "Technology": "/static/images/categories/tecnology.jpg",
 }
 
 def select_locale():
@@ -142,35 +183,37 @@ def parse_questions_payload(questions_json):
 
 
 def delete_quiz_questions(quiz_id):
-    old_questions = db.execute("SELECT id FROM questions WHERE quiz_id=?", quiz_id)
+    old_questions = db.execute("SELECT id FROM questions WHERE quiz_id=%s", quiz_id)
     for question in old_questions:
-        db.execute("DELETE FROM options WHERE question_id=?", question["id"])
-        db.execute("DELETE FROM open_answers WHERE question_id=?", question["id"])
-    db.execute("DELETE FROM questions WHERE quiz_id=?", quiz_id)
+        db.execute("DELETE FROM options WHERE question_id=%s", question["id"])
+        db.execute("DELETE FROM open_answers WHERE question_id=%s", question["id"])
+    db.execute("DELETE FROM questions WHERE quiz_id=%s", quiz_id)
 
 
 def save_quiz_questions(quiz_id, questions):
     for question in questions:
         question_type_db = "open" if question["type"] == "text" else "multiple"
-        db.execute(
-            "INSERT INTO questions (quiz_id, question_text, question_type) VALUES (?, ?, ?)",
+        result = db.execute(
+            "INSERT INTO questions (quiz_id, question_text, question_type)"
+            " VALUES (%s, %s, %s) RETURNING id",
             quiz_id,
             question["text"],
             question_type_db,
         )
-        question_id = db.execute("SELECT last_insert_rowid() as id")[0]["id"]
+        question_id = result[0]["id"]
 
         if question["type"] in ("multiple", "boolean"):
             for index, option_text in enumerate(question["options"]):
                 db.execute(
-                    "INSERT INTO options (question_id, options_text, is_correct) VALUES (?, ?, ?)",
+                    "INSERT INTO options (question_id, options_text, is_correct)"
+                    " VALUES (%s, %s, %s)",
                     question_id,
                     option_text,
-                    1 if index == question["correct_index"] else 0,
+                    index == question["correct_index"],
                 )
         else:
             db.execute(
-                "INSERT INTO open_answers (question_id, correct_answer) VALUES(?, ?)",
+                "INSERT INTO open_answers (question_id, correct_answer) VALUES(%s, %s)",
                 question_id,
                 question["correct_answer"],
             )
@@ -180,9 +223,13 @@ def save_quiz_questions(quiz_id, questions):
 @app.route("/index")
 def index():
     quizzes = db.execute("SELECT * FROM quiz ORDER BY created_at DESC LIMIT 3")
+    total_quizzes = db.execute("SELECT COUNT(*) as count FROM quiz")[0]["count"]
+    total_categories = db.execute("SELECT COUNT(DISTINCT category) as count FROM quiz")[0]["count"]
     return render_template(
         "index.html",
-        quizzes=quizzes
+        quizzes=quizzes,
+        total_quizzes=total_quizzes,
+        total_categories=total_categories,
     )
 
 
@@ -206,11 +253,12 @@ def create():
             flash(_("Add at least one question"))
             return redirect(url_for("create"))
 
-        db.execute(
-            "INSERT INTO quiz (title, category, description, image) VALUES(?, ?, ?, ?)",
+        result = db.execute(
+            "INSERT INTO quiz (title, category, description, image)"
+            " VALUES(%s, %s, %s, %s) RETURNING id",
             title, category, description, image,
         )
-        quiz_id = db.execute("SELECT last_insert_rowid() as id")[0]["id"]
+        quiz_id = result[0]["id"]
         save_quiz_questions(quiz_id, questions)
 
         return redirect(url_for("quiz_layout", id=quiz_id))
@@ -230,11 +278,11 @@ def explore():
     params = []
 
     if category and category != "all":
-        base_query += " AND category = ?"
+        base_query += " AND category = %s"
         params.append(category)
 
     if search:
-        base_query += " AND title LIKE ?"
+        base_query += " AND title ILIKE %s"
         params.append(f"%{search}%")
 
     order_clause = " ORDER BY created_at DESC" if order == "recent" else " ORDER BY created_at ASC"
@@ -247,7 +295,7 @@ def explore():
 
     offset = (page - 1) * per_page
     quizzes = db.execute(
-        f"SELECT * {base_query}{order_clause} LIMIT ? OFFSET ?",
+        f"SELECT * {base_query}{order_clause} LIMIT %s OFFSET %s",
         *params, per_page, offset
     )
 
@@ -264,13 +312,13 @@ def explore():
 
 
 def get_quiz_with_questions(quiz_id):
-    quiz = db.execute("SELECT * FROM quiz WHERE id = ?", quiz_id)
+    quiz = db.execute("SELECT * FROM quiz WHERE id = %s", quiz_id)
     if not quiz:
         return None
     quiz = quiz[0]
 
     questions = db.execute(
-        "SELECT id, question_text, question_type FROM questions WHERE quiz_id = ?",
+        "SELECT id, question_text, question_type FROM questions WHERE quiz_id = %s",
         quiz_id,
     )
 
@@ -283,13 +331,13 @@ def get_quiz_with_questions(quiz_id):
         }
         if q["question_type"] == "multiple":
             options = db.execute(
-                "SELECT id, options_text, is_correct FROM options WHERE question_id = ?",
+                "SELECT id, options_text, is_correct FROM options WHERE question_id = %s",
                 q["id"],
             )
             question["options"] = options
         else:
             answer = db.execute(
-                "SELECT correct_answer FROM open_answers WHERE question_id = ?", q["id"]
+                "SELECT correct_answer FROM open_answers WHERE question_id = %s", q["id"]
             )
             question["correct_answer"] = answer[0]["correct_answer"] if answer else ""
 
@@ -368,13 +416,13 @@ def quiz_layout(id):
 
 @app.route("/quiz/edit/<int:quiz_id>", methods=["GET", "POST"])
 def edit_quiz(quiz_id):
-    quiz = db.execute("SELECT * FROM quiz WHERE id=?", quiz_id)
+    quiz = db.execute("SELECT * FROM quiz WHERE id=%s", quiz_id)
     if not quiz:
         abort(404)
     quiz = quiz[0]
 
     questions = db.execute(
-        "SELECT id, question_text, question_type FROM questions WHERE quiz_id=?", quiz_id
+        "SELECT id, question_text, question_type FROM questions WHERE quiz_id=%s", quiz_id
     )
     question_data = []
     for q in questions:
@@ -385,7 +433,7 @@ def edit_quiz(quiz_id):
         }
         if q["question_type"] == "multiple":
             options = db.execute(
-                "SELECT options_text, is_correct FROM options WHERE question_id=?", q["id"]
+                "SELECT options_text, is_correct FROM options WHERE question_id=%s", q["id"]
             )
             q_item["options"] = [opt["options_text"] for opt in options]
             q_item["correct_index"] = next(
@@ -393,7 +441,7 @@ def edit_quiz(quiz_id):
             )
         else:
             answer = db.execute(
-                "SELECT correct_answer FROM open_answers WHERE question_id=?", q["id"]
+                "SELECT correct_answer FROM open_answers WHERE question_id=%s", q["id"]
             )
             q_item["correct_answer"] = answer[0]["correct_answer"] if answer else ""
         question_data.append(q_item)
@@ -407,7 +455,7 @@ def edit_quiz(quiz_id):
 
         if not image:
             image = DEFAULT_IMAGES.get(category)
-            
+
         if not title or not category:
             flash(_("Title and category are required."))
             return redirect(url_for("edit_quiz", quiz_id=quiz_id))
@@ -417,7 +465,7 @@ def edit_quiz(quiz_id):
             return redirect(url_for("edit_quiz", quiz_id=quiz_id))
 
         db.execute(
-            "UPDATE quiz SET title=?, category=?, description=?, image=? WHERE id=?",
+            "UPDATE quiz SET title=%s, category=%s, description=%s, image=%s WHERE id=%s",
             title, category, description, image, quiz_id,
         )
 
@@ -433,12 +481,12 @@ def edit_quiz(quiz_id):
 
 @app.route("/quiz/delete/<int:quiz_id>", methods=["POST"])
 def delete_quiz(quiz_id):
-    quiz = db.execute("SELECT id FROM quiz WHERE id=?", quiz_id)
+    quiz = db.execute("SELECT id FROM quiz WHERE id=%s", quiz_id)
     if not quiz:
         abort(404)
 
     delete_quiz_questions(quiz_id)
-    db.execute("DELETE FROM quiz WHERE id=?", quiz_id)
+    db.execute("DELETE FROM quiz WHERE id=%s", quiz_id)
 
     return redirect("/explore")
 
